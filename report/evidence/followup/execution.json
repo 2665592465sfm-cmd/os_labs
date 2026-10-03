@@ -1,0 +1,10 @@
+{
+  "started_at_host_time": "2026-10-03 22:53:10",
+  "execution_spec_sha256": "33819d6db95a0b173dd0d1c9af77044406abc9997dcceecb972a4deb828c19ea",
+  "grade_returncode": 2,
+  "grade_script_provided": false,
+  "local_checks": 13,
+  "local_passed": true,
+  "kernel_sha256": "997228412f63ece956133e3582821b2c5af2014b758ef19fd8ad26c080d38664",
+  "uploaded": false
+}

@@ -37,5 +37,5 @@ code/.gdb.in
 code/.qemu.out
 
 # Preserve the actual Lab1 test evidence
-!report/evidence/*.log
+!report/evidence/**/*.log
 

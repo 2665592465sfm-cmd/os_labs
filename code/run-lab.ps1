@@ -2,7 +2,8 @@ param(
     [ValidateSet('build', 'run', 'debug', 'gdb', 'check')]
     [string]$Action = 'check',
     [string]$ToolsRoot = (Join-Path $PSScriptRoot '..\..\..\work\toolchains'),
-    [string]$Python = 'python'
+    [string]$Python = 'python',
+    [switch]$Rebuild
 )
 
 $ErrorActionPreference = 'Stop'
@@ -21,6 +22,7 @@ $env:Path = "$gccBin;$makeBin;$qemuBin;C:\Program Files\Git\usr\bin;$originalPat
 Push-Location $PSScriptRoot
 try {
     $makeArgs = @('GCCPREFIX=riscv-none-elf-', 'QEMU=qemu-system-riscv64', "PYTHON=$Python")
+    if ($Rebuild) { $makeArgs += '-B' }
     switch ($Action) {
         'build' { }
         'run' { $makeArgs += 'qemu' }

@@ -1,0 +1,15 @@
+D:/python/python.exe tools/verify_boot.py --qemu qemu-system-riscv64 --gdb riscv-none-elf-gdb
+PASS reset-pc
+PASS image-already-loaded-at-reset
+PASS reset-to-opensbi
+PASS kernel-entry
+PASS stack-pointer
+PASS stack-size
+PASS tail-does-not-write-ra
+PASS cprintf-reached
+PASS legacy-sbi-putchar-arguments
+PASS ecall-traps-to-firmware
+PASS sbi-returns-to-kernel
+PASS kernel-startup-message
+PASS supervisor-ecall-cause-9
+13 local checks passed; logs: C:\Users\26655\Documents\Codex\2026-09-23\w-2\outputs\os-labs\code\test-output

@@ -33,7 +33,9 @@ Lab1 两项练习分别要求源码分析与启动调试，没有要求实现新
 
 ## 二、实验环境
 
-本次使用 Windows 本机的可解压工具，交叉编译 RV64 裸机代码，在 QEMU 中运行；没有把内核编译成 Windows 应用，也没有安装新的 WSL 系统。
+本次在 Windows 上运行 RISC-V 交叉编译器，生成 RV64 裸机内核 ELF 与镜像，并在 QEMU 的 RISC-V `virt` 机器中运行。ELF 头的 `Machine: RISC-V` 与入口 `0x80200000` 见 [elf-layout.log](evidence/elf-layout.log)。
+
+课程的 Linux 准备章节以 Ubuntu/Linux 为主要实验环境，工具链章节也介绍 WSL 与 macOS 的使用。本次 Windows 是实际采用并验证过的工具组合；报告不把它写成 Ubuntu 测试记录。若课程要求统一在 Linux 复现，应在对应环境另行验证。
 
 | 项目 | 实际配置 |
 |------|----------|
@@ -52,10 +54,10 @@ Lab1 两项练习分别要求源码分析与启动调试，没有要求实现新
 | 成员 | AI 编程工具 | 底层模型 | 备注 |
 |------|------------|---------|------|
 | 2412396-申丰铭 | Codex 桌面应用 | GPT-6（本次会话） | 组长提供资料，工具直接读取项目、构建和调试 |
-| 2411688-马翔宇 | 小组共用上述会话 | 同上 | 未另行提供独立 AI 工具记录 |
-| 2413992-任诗清 | 小组共用上述会话 | 同上 | 未另行提供独立 AI 工具记录 |
+| 2411688-马翔宇 | 未提供个人使用记录 | 未提供 | 本报告的 AI 会话由组长发起 |
+| 2413992-任诗清 | 未提供个人使用记录 | 未提供 | 本报告的 AI 会话由组长发起 |
 
-真实输入记录见 [prompt.md](prompt.md)。按课程四段式整理的复现需求单独标注，未写成实际提交过的历史提示词。
+真实输入记录见 [prompt.md](prompt.md)。最初请求没有使用四段式；在组长要求补齐后，AI 拟定四段式任务规格并据此实际重新构建、调试与复核，全文保存在 [task-spec.md](evidence/followup/task-spec.md)。记录区分用户原文、事后复现需求和这次真实执行规格。
 
 ---
 
@@ -115,23 +117,28 @@ void *memset(void *s, char c, size_t n);
 | `code/tools/boot.gdb` | 提供复位、固件、内核入口和栈初始化的交互式调试步骤 |
 | `code/tools/verify_boot.py` | 真正启动 QEMU 并连接 GDB，检查启动路径，保存日志与镜像哈希 |
 | `code/run-lab.ps1` | 临时配置 Windows 工具路径，支持构建、运行、调试与验证 |
+| `code/review-lab.ps1` | 实际执行终端复核，在构建、运行、检查和评分结果处提示用户手动保存截图 |
 | `code/README.md` | 提供 Linux/WSL 和本次 Windows 环境复现方法 |
 
 #### 最终提示词
 
-实际任务是让 AI 根据本地 Lab1 和课程链接完成实验，随后补充模板、环境说明及成员信息。下面是按课程框架整理的**复现提示词**，未作为独立请求发送；实际历史和完整规格见 `prompt.md`。
+最初任务是依据本地 Lab1 和课程链接完成实验。组长随后要求按作业要求补齐；本次 AI 拟定并实际采用四段式规格，重新构建、运行和检查。下面摘录这次执行规格，全文及来源见 [task-spec.md](evidence/followup/task-spec.md) 和 [prompt.md](prompt.md)，不把它写成原实验开始前的用户输入。
 
 ````markdown
 [PROMPT]
-完成 Lab1 的入口汇编分析与 QEMU/GDB 启动调试。在 lab1 分支的 code/report 保存源代码、脚本、报告和真实证据。
+核对 Lab1 两道练习、环境、报告模板、提示词和 Git 交付结构；补齐本地复核与终端截图准备。直接修改实际文件，保留原始内核与证据，不上传。
 [RELY]
 以提供的 entry.S、init.c、kernel.ld、Makefile 与 libs 为准。
 BASE_ADDRESS=0x80200000，PGSIZE=4096，KSTACKSIZE=8192。
 [GUARANTEE]
-保留既有内核接口，提供可复现的构建/调试步骤、report.md、prompt.md 与截图。
+保留 int kern_init(void)、int cprintf(const char *fmt, ...)、void cons_putc(int c)、void sbi_console_putchar(unsigned char ch) 等已有接口。
+复核 verify_boot.py 的 main()、check_gdb(expression, label)。
+增加 PowerShell Show-Checkpoint([string]$Message) 及截图引导脚本。
 [SPECIFICATION]
 Pre-Condition：RV64 裸机工具链、RISC-V virt QEMU 与 GDB 可用。
 Post-Condition：观察 0x1000、0x80000000、0x80200000；验证栈、尾跳转及启动输出。
+Case 1：调试断言失败，保留日志并退出失败。
+Case 2：缺少官方评分脚本，记录实际报错，保留待确认状态。
 Requirements：以实际代码和运行结果为准；缺失评分器不能写成通过；不得捏造提示词历史或截图。
 ````
 
@@ -142,6 +149,8 @@ Requirements：以实际代码和运行结果为准；缺失评分器不能写�
 **第二阶段：启动兼容。** 原目标使用 `-device loader,file=bin/ucore.img,addr=0x80200000`。本次 QEMU 7.2.0 的 OpenSBI 动态固件没有收到下一阶段地址，显示 `Domain0 Next Address : 0x0000000000000000`，GDB 等待内核断点超时。改用 `-kernel bin/ucore.img` 后，下一跳变为 `0x80200000`，断点成功触发。改动针对启动参数，没有增写内核启动逻辑。
 
 **第三阶段：验证工具。** xPack GDB 提示 `XML support was disabled at compile time`，基本寄存器和断点可用，但不能读动态目标描述中的 `priv`。因此用 GDB 的 PC/SP/RA 观察执行位置，用 QEMU 异常日志验证 `supervisor_ecall` 和原因 9。之后修正验证器漏匹配地址 `0x` 前缀的问题，全部检查通过；此处是日志解析问题，并非内核错误。
+
+**第四阶段：按统一提示词框架复核。** 原始用户提示词未使用课程四段式，因此最初保存的规格只是事后整理。组长授权补齐后，先形成包含真实接口和前后置条件的四段式执行规格，再据此重新构建、执行 `make qemu` 和 QEMU/GDB 验证；13 项检查全部通过，内核镜像哈希与第一轮相同。新增终端截图引导脚本，尚待组长实际保存终端截图。原始用户输入与这次 AI 拟定规格分开记录。
 
 **最终结果：** 重新构建后，`make qemu` 输出启动信息；本地 `make check` 的 13 项检查通过。原始 `tools/grade.sh` 缺失，官方评分无法运行，没有报告为通过。
 
@@ -258,6 +267,8 @@ tval:0x0000000000000000, desc=supervisor_ecall
 
 以下图片是**浏览器中展示真实命令日志的截图**。内容读取自已保存的实际运行日志；它们不是 Linux 桌面或终端窗口截图。原始文本同时保存在 `evidence`，便于核对上下文。
 
+为补齐模板中的直接测试运行截图，已准备 `code/review-lab.ps1`。当前终端窗口截图尚未保存，不能将本节的日志展示图标成终端截图。
+
 ### 5.1 编译与运行
 
 实际执行 `make GCCPREFIX=riscv-none-elf-`，8 个源文件编译成功，链接和镜像转换成功。`make qemu` 输出固件信息和内核字符串，经 Ctrl+A、X 退出后命令返回 0。
@@ -299,6 +310,12 @@ make: *** [Makefile:203: grade] Error 2
 
 原始证据：[official-grade-unavailable.log](evidence/official-grade-unavailable.log)。收到的代码未提供评分脚本，所以不能宣称官方评分通过；上述 `make check` 是补充的本地验证。若教师随后提供原版评分器，需另行检查。
 
+### 5.5 按四段式执行的补齐复核
+
+在补齐规格制定后，实际再次执行 `make grade`、构建、`make qemu` 和 `make check`。构建及运行成功，13 项本地检查通过，`make grade` 仍因脚本缺失返回 2。组长确认没有其他代码包或单独评分脚本。课程当前的 Lab1 文件树在 `tools` 下也只列出 `function.mk` 和 `kernel.ld`；这说明需要向教师确认 Lab1 是否适用统一模板中的评分项，而不能借用其他实验或架构的评分脚本。
+
+复核证据：[build.log](evidence/followup/build.log)、[qemu-run.log](evidence/followup/qemu-run.log)、[local-check.log](evidence/followup/local-check.log)、[gdb.log](evidence/followup/gdb.log)、[official-grade.log](evidence/followup/official-grade.log)、[execution.json](evidence/followup/execution.json)。`execution.json` 保存执行规格 SHA256，可与本次 [task-spec.md](evidence/followup/task-spec.md) 对照。
+
 ---
 
 ## 六、实验总结与收获
@@ -329,6 +346,8 @@ make: *** [Makefile:203: grade] Error 2
 
 提示词记录应保留真实输入，复现需求可另外整理；报告需逐项核对地址、函数名、截图和测试边界。不能把整理的文字冒充实际历史，也不能把本地检查写成官方评分结果。
 
+本次补齐把四段式规格放在重新验证之前，并按规格实际执行。今后的实验应在首次实现前就准备好四段式提示词，使任务、依赖、接口与行为规格能直接指导开发。
+
 ### 参考资料
 
 1. [课程 Lab1 练习](http://8.135.34.58/lab2026/_book/lab1/lab1_2_1_exercise.html)。
@@ -336,4 +355,5 @@ make: *** [Makefile:203: grade] Error 2
 3. 组长提供的报告模板、环境说明和原始 Lab1 源码。
 4. [QEMU 官方下载说明](https://www.qemu.org/download/)及 [Windows 构建档案](https://qemu.weilnetz.de/w64/2022/)。
 5. [xPack 官方工具链发行版](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v11.3.0-1)。
+6. [课程 Linux 环境说明](http://8.135.34.58/lab2026/_book/lab0/0_Linux.html)、[提示词结构](http://8.135.34.58/lab2026/_book/lab0.5/3_prompt_structure.html)、[Lab1 文件组成](http://8.135.34.58/lab2026/_book/lab1/lab1_2_2_file.html)。
 

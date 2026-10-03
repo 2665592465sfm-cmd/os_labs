@@ -1,0 +1,19 @@
+{
+  "branch": "lab1",
+  "source_unchanged": true,
+  "report_links_valid": true,
+  "prompt_links_valid": true,
+  "execution_spec_hash_matches": true,
+  "local_checks_passed": 13,
+  "public_repository": "https://github.com/2665592465sfm-cmd/os_labs",
+  "remote_private": false,
+  "remote_lab1_sha": "8c7072a71d74c0ef7fd254d404c6e965010a2770",
+  "terminal_screenshots_missing": [
+    "terminal-build.png",
+    "terminal-qemu.png",
+    "terminal-check.png",
+    "terminal-grade.png"
+  ],
+  "official_grade": "missing script; not passed",
+  "upload_requested": false
+}

@@ -1,0 +1,47 @@
+{
+  "versions": {
+    "qemu": "QEMU emulator version 7.2.0 (v7.2.0-11948-ge6523b71fc-dirty)",
+    "gdb": "GNU gdb (xPack GNU RISC-V Embedded GCC x86_64) 12.1"
+  },
+  "checks": [
+    "reset-pc",
+    "image-already-loaded-at-reset",
+    "reset-to-opensbi",
+    "kernel-entry",
+    "stack-pointer",
+    "stack-size",
+    "tail-does-not-write-ra",
+    "cprintf-reached",
+    "legacy-sbi-putchar-arguments",
+    "ecall-traps-to-firmware",
+    "sbi-returns-to-kernel",
+    "kernel-startup-message",
+    "supervisor-ecall-cause-9"
+  ],
+  "passed": true,
+  "kernel_sha256": "997228412f63ece956133e3582821b2c5af2014b758ef19fd8ad26c080d38664",
+  "qemu_command": [
+    "qemu-system-riscv64",
+    "-machine",
+    "virt",
+    "-m",
+    "128M",
+    "-smp",
+    "1",
+    "-nographic",
+    "-bios",
+    "default",
+    "-monitor",
+    "none",
+    "-kernel",
+    "bin/ucore.img",
+    "-d",
+    "int",
+    "-D",
+    "C:\\Users\\26655\\Documents\\Codex\\2026-09-23\\w-2\\outputs\\os-labs\\code\\test-output\\traps.log",
+    "-S",
+    "-gdb",
+    "tcp:127.0.0.1:60592"
+  ],
+  "note": "Local checks only; no course tools/grade.sh was provided."
+}
