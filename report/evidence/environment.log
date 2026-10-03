@@ -1,0 +1,19 @@
+riscv-none-elf-gcc.exe (xPack GNU RISC-V Embedded GCC x86_64) 11.3.0
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+GNU gdb (xPack GNU RISC-V Embedded GCC x86_64) 12.1
+Copyright (C) 2022 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+QEMU emulator version 7.2.0 (v7.2.0-11948-ge6523b71fc-dirty)
+Copyright (c) 2003-2022 Fabrice Bellard and the QEMU Project developers
+GNU Make 4.4.1
+Built for x86_64-w64-mingw32
+Copyright (C) 1988-2023 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Python 3.13.2

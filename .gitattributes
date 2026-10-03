@@ -1,0 +1,2 @@
+# Keep saved command output byte-for-byte, including serial line endings.
+report/evidence/** -text

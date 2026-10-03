@@ -1,0 +1,58 @@
+The target architecture is set to "riscv:rv64".
+warning: Can not parse XML target description; XML support was disabled at compile time
+0x0000000000001000 in ?? ()
+=== RESET / PRELOADED IMAGE ===
+pc             0x1000	0x1000
+=> 0x1000:	auipc	t0,0x0
+   0x1004:	addi	a2,t0,40
+   0x1008:	csrr	a0,mhartid
+   0x100c:	ld	a1,32(t0)
+   0x1010:	ld	t0,24(t0)
+   0x1014:	jr	t0
+   0x1018:	unimp
+   0x101a:	.2byte	0x8000
+   0x101c:	unimp
+   0x101e:	unimp
+0x1018:	0x0000000080000000	0x0000000087e00000
+0x1028:	0x000000004942534f	0x0000000000000002
+0x80200000 <kern_entry>:	0x00003117	0x00010113	0x3517a009	0x05130000
+PASS reset-pc
+PASS image-already-loaded-at-reset
+=== SIX RESET INSTRUCTIONS ===
+0x0000000000001004 in ?? ()
+pc             0x1004	0x1004
+0x0000000000001008 in ?? ()
+pc             0x1008	0x1008
+0x000000000000100c in ?? ()
+pc             0x100c	0x100c
+0x0000000000001010 in ?? ()
+pc             0x1010	0x1010
+0x0000000000001014 in ?? ()
+pc             0x1014	0x1014
+0x0000000080000000 in ?? ()
+pc             0x80000000	0x80000000
+PASS reset-to-opensbi
+pc             0x80000000	0x80000000
+a0             0x0	0
+a1             0x87e00000	2279604224
+a2             0x1028	4136
+=> 0x80000000:	add	s0,a0,zero
+   0x80000004:	add	s1,a1,zero
+   0x80000008:	add	s2,a2,zero
+   0x8000000c:	jal	ra,0x80000560
+   0x80000010:	add	a6,a0,zero
+   0x80000014:	add	a0,s0,zero
+=== OPENSBI TO KERNEL ===
+Hardware watchpoint 1: -location *(unsigned int*)0x80200000
+Hardware assisted breakpoint 2 at 0x80200000: file kern/init/entry.S, line 7.
+
+Temporary breakpoint 2, kern_entry () at kern/init/entry.S:7
+7	    la sp, bootstacktop
+pc             0x80200000	0x80200000 <kern_entry>
+sp             0x80046ef0	0x80046ef0
+ra             0x800097dc	0x800097dc
+a0             0x0	0
+a1             0x87e00000	2279604224
+C:\Users\26655\Documents\Codex\2026-09-23\w-2\outputs\os-labs\code\test-output\boot-session.gdb:44: Error in sourced command file:
+Invalid register `priv'
+[Inferior 1 (process 1) detached]

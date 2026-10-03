@@ -29,3 +29,13 @@ out/
 __pycache__/
 *.py[cod]
 
+# Lab1 build products and temporary debug sessions
+code/bin/
+code/obj/
+code/test-output/
+code/.gdb.in
+code/.qemu.out
+
+# Preserve the actual Lab1 test evidence
+!report/evidence/*.log
+
