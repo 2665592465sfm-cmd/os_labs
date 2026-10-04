@@ -1,0 +1,17 @@
+{
+  "attachment": "codex-clipboard-6aa09ac7-55a4-43fd-af1c-bee4589aa790.png",
+  "saved_as": "report/images/ubuntu-qemu.png",
+  "sha256": "b919c44b383e23a5815d15dafe7795e035dfa6f787fbf14722d3521fc448c12c",
+  "dimensions": [
+    1218,
+    519
+  ],
+  "source": "User-provided real Ubuntu terminal screenshot",
+  "content_edited": false,
+  "observed": [
+    "kernel startup message",
+    "QEMU terminated",
+    "Ubuntu shell prompt"
+  ],
+  "uploaded": false
+}

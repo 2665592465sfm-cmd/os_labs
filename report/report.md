@@ -279,9 +279,9 @@ tval:0x0000000000000000, desc=supervisor_ecall
 
 ## 五、测试与验证
 
-以下图片是**浏览器中展示真实命令日志的截图**。内容读取自已保存的实际运行日志；它们不是 Linux 桌面或终端窗口截图。原始文本同时保存在 `evidence`，便于核对上下文。
+5.1—5.5 的图片是**浏览器中展示真实命令日志的截图**。内容读取自已保存的实际运行日志；它们不是 Linux 桌面或终端窗口截图。原始文本同时保存在 `evidence`，便于核对上下文。组长后来提供的真实 Ubuntu 终端截图见 5.8。
 
-为补齐模板中的直接测试运行截图，已准备 `code/review-lab.ps1`。当前终端窗口截图尚未保存，不能将本节的日志展示图标成终端截图。
+为补齐模板中的直接测试运行截图，已准备操作说明与 `code/review-lab.ps1`。目前已取得 Ubuntu QEMU 输出与退出的终端截图；编译、检查和 GDB 终端截图仍待补齐。原有日志展示图继续按其实际形式标注。
 
 ### 5.1 编译与运行
 
@@ -363,7 +363,7 @@ Ubuntu 镜像 SHA256 为：
 a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
 ```
 
-Linux 与 Windows 的编译器、固件不同，部分地址及镜像哈希不同；启动行为和两道练习结论一致。Ubuntu 中实际执行 `make grade` 仍因缺少 `tools/grade.sh` 返回 2，见 [official-grade.log](evidence/ubuntu/official-grade.log)。该目标先清理构建产物，随后已重新构建恢复运行目录。本节目前提供真实文本日志，Ubuntu 终端窗口截图尚待手动保存。
+Linux 与 Windows 的编译器、固件不同，部分地址及镜像哈希不同；启动行为和两道练习结论一致。Ubuntu 中实际执行 `make grade` 仍因缺少 `tools/grade.sh` 返回 2，见 [official-grade.log](evidence/ubuntu/official-grade.log)。该目标先清理构建产物，随后已重新构建恢复运行目录。本节保存真实文本日志；组长提供的部分终端截图见 5.8。
 
 ### 5.7 代为执行编译、运行与检查（2026-10-04 19:19）
 
@@ -371,7 +371,13 @@ Linux 与 Windows 的编译器、固件不同，部分地址及镜像哈希不�
 
 本轮原始证据：[编译日志](evidence/ubuntu/run-20261004-191910/build.log)、[make qemu 日志](evidence/ubuntu/run-20261004-191910/make-qemu.log)、[make check 日志](evidence/ubuntu/run-20261004-191910/check.log)、[GDB 会话](evidence/ubuntu/run-20261004-191910/boot/gdb.log)、[验证结果](evidence/ubuntu/run-20261004-191910/boot/summary.json)、[执行记录](evidence/ubuntu/run-20261004-191910/execution.json)。QEMU 已正常退出，没有留下本轮仿真进程。
 
-本轮没有生成新的窗口截图，不能把原始文本文件称为截图。现有日志展示图片继续保留，真实终端窗口截图仍需手动保存；本轮未执行上传。
+本轮自动执行没有生成新的窗口截图，不能把原始文本文件称为截图。现有日志展示图片继续保留；组长后续手动提供的截图见 5.8。本轮未执行上传。
+
+### 5.8 组长提供的真实 Ubuntu 终端截图
+
+![Ubuntu QEMU 内核输出及正常退出](images/ubuntu-qemu.png)
+
+图中显示 `(THU.CST) os is loading ...`、`QEMU: Terminated` 和返回 `sfm@Stephen:~/os-course/os-labs/code$` 的提示符，记录了成功启动和退出后的状态。这张图是组长直接提供的终端截图，按原始字节保存，没有改绘内容。它展示运行输出末尾；编译、13 项检查及 GDB 调试的窗口截图仍待提供。
 
 ---
 
