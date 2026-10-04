@@ -77,7 +77,13 @@ def main():
     commands += f'echo === SBI ECALL ===\\n\nthbreak *0x{ecall:x}\ncontinue\n'
     commands += 'info registers pc a0 a7\n'
     commands += check_gdb('$a7 == 1 && $a0 == 40', 'legacy-sbi-putchar-arguments')
-    commands += 'si\ninfo registers pc\n'
+    # QEMU/GDB combinations differ in whether stepi stops inside an ecall
+    # handler. If CSR registers are available, break at the actual mtvec entry.
+    # Older Windows GDB builds without target XML retain the measured fallback.
+    commands += ('if $_isvoid($mtvec)\n  si\nelse\n'
+                 '  set $trap_entry = (unsigned long)$mtvec & ~3\n'
+                 '  printf "Firmware trap entry: 0x%lx\\n", $trap_entry\n'
+                 '  thbreak *$trap_entry\n  continue\nend\ninfo registers pc\n')
     commands += check_gdb('$pc >= 0x80000000 && $pc < 0x80200000', 'ecall-traps-to-firmware')
     commands += f'thbreak *0x{ecall + 4:x}\ncontinue\ninfo registers pc\n'
     commands += check_gdb(f'$pc == 0x{ecall + 4:x}', 'sbi-returns-to-kernel')
