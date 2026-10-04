@@ -1,0 +1,17 @@
+
+bin/kernel:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+0000000080200480 <sbi_console_putchar>:
+    80200480:	4781                	li	a5,0
+    80200482:	00003717          	auipc	a4,0x3
+    80200486:	b7e73703          	ld	a4,-1154(a4) # 80203000 <SBI_CONSOLE_PUTCHAR>
+    8020048a:	88ba                	mv	a7,a4
+    8020048c:	852a                	mv	a0,a0
+    8020048e:	85be                	mv	a1,a5
+    80200490:	863e                	mv	a2,a5
+    80200492:	00000073          	ecall
+    80200496:	87aa                	mv	a5,a0
+    80200498:	8082                	ret

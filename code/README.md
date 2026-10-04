@@ -6,6 +6,17 @@ Makefile 已明确 RV64 架构和 ABI，允许覆盖工具链前缀，GDB 目标
 
 ## Linux / WSL / Ubuntu
 
+2026-10-04 已在本机 WSL2 + Ubuntu 22.04.5 LTS 完成配置和实际验证；13 项本地启动检查通过。项目在 Ubuntu 的 `~/os-course/os-labs`，AI 工具使用现有 Codex。实际日志位于 `../report/evidence/ubuntu`。
+
+在这台电脑进入 Ubuntu 后运行：
+
+```sh
+source ~/os-course/env.sh
+cd ~/os-course/os-labs/code
+make
+make qemu
+```
+
 准备 RISC-V 裸机 GCC（包含 binutils 和 GDB）、GNU make、QEMU 和 Python 3。
 
 ```sh

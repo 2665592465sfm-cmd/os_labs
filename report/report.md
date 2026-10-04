@@ -6,7 +6,7 @@
 |------|------|
 | **实验名称** | Lab1：最小可执行内核与启动流程 |
 | **小组成员** | 2412396-申丰铭（组长）、2411688-马翔宇、2413992-任诗清 |
-| **完成日期** | 2026-10-03 |
+| **完成日期** | 2026-10-04（含 Ubuntu 复现） |
 
 ### 小组分工
 
@@ -33,9 +33,23 @@ Lab1 两项练习分别要求源码分析与启动调试，没有要求实现新
 
 ## 二、实验环境
 
-本次在 Windows 上运行 RISC-V 交叉编译器，生成 RV64 裸机内核 ELF 与镜像，并在 QEMU 的 RISC-V `virt` 机器中运行。ELF 头的 `Machine: RISC-V` 与入口 `0x80200000` 见 [elf-layout.log](evidence/elf-layout.log)。
+2026-10-04 已在 WSL2 的 Ubuntu 22.04.5 LTS 中配置课程工具，独立重新编译 RV64 裸机内核，并在 QEMU 中完成 13 项启动检查。当前主要实验目录为 Ubuntu 的 `~/os-course/os-labs/code`。Linux ELF 的 `Machine: RISC-V` 与入口 `0x80200000` 见 [Ubuntu ELF 日志](evidence/ubuntu/elf-layout.log)。
 
-课程的 Linux 准备章节以 Ubuntu/Linux 为主要实验环境，工具链章节也介绍 WSL 与 macOS 的使用。本次 Windows 是实际采用并验证过的工具组合；报告不把它写成 Ubuntu 测试记录。若课程要求统一在 Linux 复现，应在对应环境另行验证。
+| 项目 | Ubuntu 实际配置 |
+|------|-----------------|
+| Linux 环境 | WSL2，Ubuntu 22.04.5 LTS，普通用户 `sfm` |
+| 交叉编译器 | `riscv64-unknown-elf-gcc` 10.2.0，Ubuntu 官方包 |
+| 编译目标 | `-march=rv64gc -mabi=lp64d -mcmodel=medany` |
+| 调试器 | `gdb-multiarch` 12.1；提供 `riscv64-unknown-elf-gdb` 符号链接 |
+| 构建及基础工具 | Make 4.3、Git 2.34.1、Python 3.10.12、nano 6.2 |
+| 模拟器 | QEMU 6.2.0；`virt`、1 hart、128 MiB RAM |
+| 实际运行固件 | `-bios default` 使用 QEMU 内置 OpenSBI v0.9 |
+| 额外安装的固件包 | Ubuntu `opensbi` 1.3；本次启动没有指定该包中的镜像 |
+| Node.js / npm | 官方 Node.js v22.23.3 / npm 10.9.9，下载后验证 SHA256 |
+
+Ubuntu 版本原始输出见 [environment.log](evidence/ubuntu/environment.log)，软件包和符号见 [packages-and-symbols.log](evidence/ubuntu/packages-and-symbols.log)。课程推荐预编译 RISC-V 工具链，本次采用 Ubuntu 官方预编译包；QEMU 6.2 高于课程要求的 4.1，已实际验证。
+
+最初的 Windows 验证记录保留。下列 Windows 工具表，以及第四节和 5.1—5.5 的具体地址与截图，均来自最初的 Windows 测试；本次 Ubuntu 的地址差异和证据另见 5.6，不把旧记录改称为 Linux 运行结果。
 
 | 项目 | 实际配置 |
 |------|----------|
@@ -315,6 +329,41 @@ make: *** [Makefile:203: grade] Error 2
 在补齐规格制定后，实际再次执行 `make grade`、构建、`make qemu` 和 `make check`。构建及运行成功，13 项本地检查通过，`make grade` 仍因脚本缺失返回 2。组长确认没有其他代码包或单独评分脚本。课程当前的 Lab1 文件树在 `tools` 下也只列出 `function.mk` 和 `kernel.ld`；这说明需要向教师确认 Lab1 是否适用统一模板中的评分项，而不能借用其他实验或架构的评分脚本。
 
 复核证据：[build.log](evidence/followup/build.log)、[qemu-run.log](evidence/followup/qemu-run.log)、[local-check.log](evidence/followup/local-check.log)、[gdb.log](evidence/followup/gdb.log)、[official-grade.log](evidence/followup/official-grade.log)、[execution.json](evidence/followup/execution.json)。`execution.json` 保存执行规格 SHA256，可与本次 [task-spec.md](evidence/followup/task-spec.md) 对照。
+
+### 5.6 Ubuntu 22.04 实际复现（2026-10-04）
+
+完成 Ubuntu 初始化后，实际安装 Linux 工具，从本地 Git 的 `lab1` 分支通过离线仓库包复制完整提交，在 Linux 自身文件系统中重新构建。没有执行 `git push`。
+
+```sh
+cd ~/os-course/os-labs/code
+source ~/os-course/env.sh
+make -B
+make check
+```
+
+配置阶段实际执行 `make -B GDB=gdb-multiarch` 和 `python3 tools/verify_boot.py --gdb gdb-multiarch --objdump riscv64-unknown-elf-objdump`，保存独立输出目录。13 项本地检查全部通过，串口显示 `(THU.CST) os is loading ...`。证据：[构建](evidence/ubuntu/build.log)、[本地检查](evidence/ubuntu/local-check.log)、[GDB](evidence/ubuntu/boot/gdb.log)、[串口](evidence/ubuntu/boot/qemu.log)、[异常日志](evidence/ubuntu/boot/traps.log)、[结果 JSON](evidence/ubuntu/boot/summary.json)。
+
+| 观测点 | Ubuntu 实测 |
+|--------|-------------|
+| 复位 → 固件 → 内核 | `0x1000 → 0x80000000 → 0x80200000` |
+| 固件移交时 SP / RA | `0x80017ee0` / `0x800078cc` |
+| 设备树参数 a1 | `0x87000000` |
+| 内核栈底 / 栈顶 | `0x80201000` / `0x80203000`，8192 字节 |
+| `kern_init` / `cprintf` | `0x8020000a` / `0x80200056` |
+| BSS 范围 | `edata=end=0x80203008`，长度 0 |
+| 首字符 ecall / 固件陷阱入口 / 返回 | `0x80200492` / `0x80000520` / `0x80200496` |
+
+首次 Ubuntu 检查在 `ecall` 上执行 `si` 后直接停在返回指令，原验证器的“停在固件地址”断言失败；同次 QEMU 异常日志已记录原因 9。这说明单步停点没有覆盖固件入口，不能据此推断未发生陷阱。原始失败日志保存在 [first-attempt/gdb.log](evidence/ubuntu/first-attempt/gdb.log) 和 [traps.log](evidence/ubuntu/first-attempt/traps.log)。
+
+为直接观测入口，验证器在目标提供 `mtvec` 时读取其地址，设置硬件临时断点后继续执行。本次断点真实停在 `0x80000520`，再停在返回位置；随后 13 项检查通过。未提供扩展寄存器的旧 Windows GDB 保留已验证的单步路径；改动后 Windows 兼容检查也通过，见 [windows-validator-compatibility.log](evidence/ubuntu/windows-validator-compatibility.log)。内核源代码未因此改动。
+
+Ubuntu 镜像 SHA256 为：
+
+```text
+a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
+```
+
+Linux 与 Windows 的编译器、固件不同，部分地址及镜像哈希不同；启动行为和两道练习结论一致。Ubuntu 中实际执行 `make grade` 仍因缺少 `tools/grade.sh` 返回 2，见 [official-grade.log](evidence/ubuntu/official-grade.log)。该目标先清理构建产物，随后已重新构建恢复运行目录。本节目前提供真实文本日志，Ubuntu 终端窗口截图尚待手动保存。
 
 ---
 

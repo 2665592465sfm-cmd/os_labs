@@ -1,0 +1,184 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  3981  100  3981    0     0   4469      0 --:--:-- --:--:-- --:--:--  4468
+node-v22.23.3-linux-x64.tar.xz: OK
+Cloning into '/home/sfm/os-course/os-labs'...
+=== ACTUAL UBUNTU ENVIRONMENT ===
+2026-10-04T18:58:24+08:00
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.5 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+Linux Stephen 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+=== node ===
+v22.23.3
+
+=== npm ===
+10.9.9
+
+=== git ===
+git version 2.34.1
+
+=== make ===
+GNU Make 4.3
+Built for x86_64-pc-linux-gnu
+Copyright (C) 1988-2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+=== riscv64-unknown-elf-gcc ===
+riscv64-unknown-elf-gcc () 10.2.0
+Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+=== riscv64-unknown-elf-gdb ===
+GNU gdb (Ubuntu 12.1-0ubuntu1~22.04.2) 12.1
+Copyright (C) 2022 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+=== qemu-system-riscv64 ===
+QEMU emulator version 6.2.0 (Debian 1:6.2+dfsg-2ubuntu6.31)
+Copyright (c) 2003-2021 Fabrice Bellard and the QEMU Project developers
+
+=== python3 ===
+Python 3.10.12
++ cc kern/init/entry.S
++ cc kern/init/init.c
++ cc kern/libs/stdio.c
++ cc kern/driver/console.c
++ cc libs/printfmt.c
++ cc libs/readline.c
++ cc libs/sbi.c
++ cc libs/string.c
++ ld bin/kernel
+riscv64-unknown-elf-objcopy bin/kernel --strip-all -O binary bin/ucore.img
+The target architecture is set to "riscv:rv64".
+0x0000000000001000 in ?? ()
+=== RESET / PRELOADED IMAGE ===
+pc             0x1000	0x1000
+=> 0x1000:	auipc	t0,0x0
+   0x1004:	addi	a2,t0,40
+   0x1008:	csrr	a0,mhartid
+   0x100c:	ld	a1,32(t0)
+   0x1010:	ld	t0,24(t0)
+   0x1014:	jr	t0
+   0x1018:	unimp
+   0x101a:	.2byte	0x8000
+   0x101c:	unimp
+   0x101e:	unimp
+0x1018:	0x0000000080000000	0x0000000087000000
+0x1028:	0x000000004942534f	0x0000000000000002
+0x80200000 <kern_entry>:	0x00003117	0x00010113	0x3517a009	0x05130000
+PASS reset-pc
+PASS image-already-loaded-at-reset
+=== SIX RESET INSTRUCTIONS ===
+0x0000000000001004 in ?? ()
+pc             0x1004	0x1004
+0x0000000000001008 in ?? ()
+pc             0x1008	0x1008
+0x000000000000100c in ?? ()
+pc             0x100c	0x100c
+0x0000000000001010 in ?? ()
+pc             0x1010	0x1010
+0x0000000000001014 in ?? ()
+pc             0x1014	0x1014
+0x0000000080000000 in ?? ()
+pc             0x80000000	0x80000000
+PASS reset-to-opensbi
+pc             0x80000000	0x80000000
+a0             0x0	0
+a1             0x87000000	2264924160
+a2             0x1028	4136
+=> 0x80000000:	add	s0,a0,zero
+   0x80000004:	add	s1,a1,zero
+   0x80000008:	add	s2,a2,zero
+   0x8000000c:	jal	ra,0x800006a0
+   0x80000010:	add	a6,a0,zero
+   0x80000014:	add	a0,s0,zero
+=== OPENSBI TO KERNEL ===
+Hardware watchpoint 1: -location *(unsigned int*)0x80200000
+Hardware assisted breakpoint 2 at 0x80200000: file kern/init/entry.S, line 7.
+
+Temporary breakpoint 2, kern_entry () at kern/init/entry.S:7
+7	    la sp, bootstacktop
+pc             0x80200000	0x80200000 <kern_entry>
+sp             0x80017ee0	0x80017ee0
+ra             0x800078cc	0x800078cc
+a0             0x0	0
+a1             0x87000000	2264924160
+Dump of assembler code for function kern_entry:
+=> 0x0000000080200000 <+0>:	auipc	sp,0x3
+   0x0000000080200004 <+4>:	mv	sp,sp
+   0x0000000080200008 <+8>:	j	0x8020000a <kern_init>
+End of assembler dump.
+PASS kernel-entry
+0x0000000080200004 in kern_entry () at kern/init/entry.S:7
+7	    la sp, bootstacktop
+9	    tail kern_init
+=== STACK AND TAIL TRANSFER ===
+pc             0x80200008	0x80200008 <kern_entry+8>
+sp             0x80203000	0x80203000 <SBI_CONSOLE_PUTCHAR>
+ra             0x800078cc	0x800078cc
+$1 = 0x80201000
+$2 = 0x80203000
+PASS stack-pointer
+PASS stack-size
+Hardware assisted breakpoint 3 at 0x8020000a: file kern/init/init.c, line 8.
+
+Temporary breakpoint 3, kern_init () at kern/init/init.c:8
+8	    memset(edata, 0, end - edata);
+pc             0x8020000a	0x8020000a <kern_init>
+sp             0x80203000	0x80203000 <SBI_CONSOLE_PUTCHAR>
+ra             0x800078cc	0x800078cc
+PASS tail-does-not-write-ra
+BSS range: edata=0x80203008 end=0x80203008 bytes=0
+=== C PRINTF ===
+Hardware assisted breakpoint 4 at 0x80200056: file kern/libs/stdio.c, line 40.
+
+Temporary breakpoint 4, cprintf (fmt=fmt@entry=0x802004e8 "%s\n\n") at kern/libs/stdio.c:40
+40	    va_start(ap, fmt);
+pc             0x80200056	0x80200056 <cprintf>
+sp             0x80202ff0	0x80202ff0
+a0             0x802004e8	2149582056
+a1             0x802004c8	2149582024
+0x802004e8:	"%s\n\n"
+0x802004c8:	"(THU.CST) os is loading ...\n"
+#0  cprintf (fmt=fmt@entry=0x802004e8 "%s\n\n") at kern/libs/stdio.c:40
+#1  0x000000008020003a in kern_init () at kern/init/init.c:11
+#2  0x00000000800078cc in ?? ()
+PASS cprintf-reached
+=== SBI ECALL ===
+Hardware assisted breakpoint 5 at 0x80200492: file libs/sbi.c, line 18.
+
+Temporary breakpoint 5, 0x0000000080200492 in sbi_call (arg2=0, arg1=0, arg0=40, sbi_type=1) at libs/sbi.c:18
+18	    __asm__ volatile (
+pc             0x80200492	0x80200492 <sbi_console_putchar+18>
+a0             0x28	40
+a7             0x1	1
+PASS legacy-sbi-putchar-arguments
+0x0000000080200496	18	    __asm__ volatile (
+pc             0x80200496	0x80200496 <sbi_console_putchar+22>
+FAIL ecall-traps-to-firmware
+[Inferior 1 (process 1) detached]
+
+Traceback (most recent call last):
+  File "/home/sfm/os-course/os-labs/code/tools/verify_boot.py", line 146, in <module>
+    main()
+  File "/home/sfm/os-course/os-labs/code/tools/verify_boot.py", line 114, in main
+    raise RuntimeError(f'GDB verification failed ({result.returncode})')
+RuntimeError: GDB verification failed (1)
+Setup failed at line 131. See /home/sfm/os-course/setup-logs/setup-20261004-185821.log

@@ -1,0 +1,47 @@
+{
+  "versions": {
+    "qemu": "QEMU emulator version 6.2.0 (Debian 1:6.2+dfsg-2ubuntu6.31)",
+    "gdb": "GNU gdb (Ubuntu 12.1-0ubuntu1~22.04.2) 12.1"
+  },
+  "checks": [
+    "reset-pc",
+    "image-already-loaded-at-reset",
+    "reset-to-opensbi",
+    "kernel-entry",
+    "stack-pointer",
+    "stack-size",
+    "tail-does-not-write-ra",
+    "cprintf-reached",
+    "legacy-sbi-putchar-arguments",
+    "ecall-traps-to-firmware",
+    "sbi-returns-to-kernel",
+    "kernel-startup-message",
+    "supervisor-ecall-cause-9"
+  ],
+  "passed": true,
+  "kernel_sha256": "a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd",
+  "qemu_command": [
+    "qemu-system-riscv64",
+    "-machine",
+    "virt",
+    "-m",
+    "128M",
+    "-smp",
+    "1",
+    "-nographic",
+    "-bios",
+    "default",
+    "-monitor",
+    "none",
+    "-kernel",
+    "bin/ucore.img",
+    "-d",
+    "int",
+    "-D",
+    "/home/sfm/os-course/setup-logs/lab1-20261004-185947/boot/traps.log",
+    "-S",
+    "-gdb",
+    "tcp:127.0.0.1:57581"
+  ],
+  "note": "Local checks only; no course tools/grade.sh was provided."
+}

@@ -118,6 +118,46 @@ Requirements：根据模板回答全部练习；区分源码语义、实测与�
 
 - 两道练习的答案及实际观察值已核对；构建、运行、13 项本地检查通过。
 - 新增 `code/review-lab.ps1`，实际执行命令并提示组长手动截取终端窗口；当前尚未保存这组终端截图。
-- Windows 工具组合已验证，课程主要使用 Ubuntu/Linux；如课程要求统一 Linux 环境，仍需在对应环境复核。
+- Windows 工具组合已验证；2026-10-04 已完成 Ubuntu 配置与实际复现，详见下节。
 - 官方评分器缺失，不能记为评分通过；仓库上传按组长要求暂缓。
+
+## 五、Ubuntu 环境配置的实际输入和结果（2026-10-04）
+
+### Prompt 7：按课程推荐准备基础环境
+
+```text
+我有个问题，我是不是应该从lab0开始，把什么什么基础环境全部配置好，按他建议的来
+```
+
+```text
+你来进行处理吧，显然ai工具我就用你codex了。其他的你帮我按照推荐的配置出来
+```
+
+### Prompt 8：安装、初始化过程中的实际反馈
+
+组长依次提供安装截图及下列输入：
+
+```text
+怎么搞
+```
+
+```text
+怎么说
+```
+
+```text
+为啥密码这里点不动，按键没反应
+```
+
+```text
+下一步
+```
+
+过程与结果：Ubuntu 下载首次报 `WININET_E_INVALID_SERVER_RESPONSE`，使用 `--web-download` 安装成功。组长自行创建普通用户 `sfm` 并设置密码；密码输入没有屏幕回显。AI 未接收或代填密码。
+
+AI 随后实际安装 Ubuntu 开发工具、RISC-V GCC、GDB、QEMU、Node.js 22，将已提交的 `lab1` 通过离线 Git 仓库包复制到 Linux 文件系统。跨系统读取源仓库使用仅针对该路径的临时 Git 配置；没有全局信任所有仓库。
+
+Linux 首次验证发现 `si` 的异常停点行为与 Windows 不同，保存失败证据，修改主机验证脚本为可读取 `mtvec` 时直接在固件陷阱入口设置断点。随后 Linux 与 Windows 的 13 项本地检查均通过。Ubuntu 的官方评分脚本仍缺失，真实 `make grade` 返回 2。
+
+Linux 环境与证据见 [报告第 5.6 节](report.md)、[environment.log](evidence/ubuntu/environment.log)、[summary.json](evidence/ubuntu/boot/summary.json)。上述输入为真实用户原文；技术排错由 AI 根据实际输出执行，没有额外虚构的用户提示词。仓库未上传。
 

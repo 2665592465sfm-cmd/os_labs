@@ -1,0 +1,4 @@
+sh: 0: cannot open tools/grade.sh: No such file
+make: *** [Makefile:203: grade] Error 2
+
+Actual make grade exit status: 2

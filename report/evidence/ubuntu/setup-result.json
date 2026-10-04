@@ -1,0 +1,8 @@
+{
+  "ubuntu_setup_executed": true,
+  "linux_repo": "/home/sfm/os-course/os-labs",
+  "local_checks_passed": 13,
+  "kernel_sha256": "a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd",
+  "official_grade_status": "missing",
+  "uploaded": false
+}
