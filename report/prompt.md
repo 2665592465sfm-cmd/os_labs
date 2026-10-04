@@ -161,3 +161,14 @@ Linux 首次验证发现 `si` 的异常停点行为与 Windows 不同，保存�
 
 Linux 环境与证据见 [报告第 5.6 节](report.md)、[environment.log](evidence/ubuntu/environment.log)、[summary.json](evidence/ubuntu/boot/summary.json)。上述输入为真实用户原文；技术排错由 AI 根据实际输出执行，没有额外虚构的用户提示词。仓库未上传。
 
+
+
+## 六、代为执行的真实请求
+
+### Prompt 9
+
+```text
+你帮我操作吧
+```
+
+结果：在 Ubuntu 内实际重新编译、运行 QEMU 并检查；启动输出正常，QEMU 正常退出，13 项本地检查通过。原始日志和结果见 [本轮执行记录](evidence/ubuntu/run-20261004-191910/execution.json)。本轮截图尝试没有生成新的图片：浏览器策略不允许打开本地 HTML 页面，记事本启动授权超时；没有继续绕过限制。Computer Use 技能禁止自动操作终端应用，因此没有自动操作终端窗口截图。仓库暂不上传。

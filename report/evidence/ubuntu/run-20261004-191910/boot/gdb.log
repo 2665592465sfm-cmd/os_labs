@@ -1,0 +1,117 @@
+The target architecture is set to "riscv:rv64".
+0x0000000000001000 in ?? ()
+=== RESET / PRELOADED IMAGE ===
+pc             0x1000	0x1000
+=> 0x1000:	auipc	t0,0x0
+   0x1004:	addi	a2,t0,40
+   0x1008:	csrr	a0,mhartid
+   0x100c:	ld	a1,32(t0)
+   0x1010:	ld	t0,24(t0)
+   0x1014:	jr	t0
+   0x1018:	unimp
+   0x101a:	.2byte	0x8000
+   0x101c:	unimp
+   0x101e:	unimp
+0x1018:	0x0000000080000000	0x0000000087000000
+0x1028:	0x000000004942534f	0x0000000000000002
+0x80200000 <kern_entry>:	0x00003117	0x00010113	0x3517a009	0x05130000
+PASS reset-pc
+PASS image-already-loaded-at-reset
+=== SIX RESET INSTRUCTIONS ===
+0x0000000000001004 in ?? ()
+pc             0x1004	0x1004
+0x0000000000001008 in ?? ()
+pc             0x1008	0x1008
+0x000000000000100c in ?? ()
+pc             0x100c	0x100c
+0x0000000000001010 in ?? ()
+pc             0x1010	0x1010
+0x0000000000001014 in ?? ()
+pc             0x1014	0x1014
+0x0000000080000000 in ?? ()
+pc             0x80000000	0x80000000
+PASS reset-to-opensbi
+pc             0x80000000	0x80000000
+a0             0x0	0
+a1             0x87000000	2264924160
+a2             0x1028	4136
+=> 0x80000000:	add	s0,a0,zero
+   0x80000004:	add	s1,a1,zero
+   0x80000008:	add	s2,a2,zero
+   0x8000000c:	jal	ra,0x800006a0
+   0x80000010:	add	a6,a0,zero
+   0x80000014:	add	a0,s0,zero
+=== OPENSBI TO KERNEL ===
+Hardware watchpoint 1: -location *(unsigned int*)0x80200000
+Hardware assisted breakpoint 2 at 0x80200000: file kern/init/entry.S, line 7.
+
+Temporary breakpoint 2, kern_entry () at kern/init/entry.S:7
+7	    la sp, bootstacktop
+pc             0x80200000	0x80200000 <kern_entry>
+sp             0x80017ee0	0x80017ee0
+ra             0x800078cc	0x800078cc
+a0             0x0	0
+a1             0x87000000	2264924160
+Dump of assembler code for function kern_entry:
+=> 0x0000000080200000 <+0>:	auipc	sp,0x3
+   0x0000000080200004 <+4>:	mv	sp,sp
+   0x0000000080200008 <+8>:	j	0x8020000a <kern_init>
+End of assembler dump.
+PASS kernel-entry
+0x0000000080200004 in kern_entry () at kern/init/entry.S:7
+7	    la sp, bootstacktop
+9	    tail kern_init
+=== STACK AND TAIL TRANSFER ===
+pc             0x80200008	0x80200008 <kern_entry+8>
+sp             0x80203000	0x80203000 <SBI_CONSOLE_PUTCHAR>
+ra             0x800078cc	0x800078cc
+$1 = 0x80201000
+$2 = 0x80203000
+PASS stack-pointer
+PASS stack-size
+Hardware assisted breakpoint 3 at 0x8020000a: file kern/init/init.c, line 8.
+
+Temporary breakpoint 3, kern_init () at kern/init/init.c:8
+8	    memset(edata, 0, end - edata);
+pc             0x8020000a	0x8020000a <kern_init>
+sp             0x80203000	0x80203000 <SBI_CONSOLE_PUTCHAR>
+ra             0x800078cc	0x800078cc
+PASS tail-does-not-write-ra
+BSS range: edata=0x80203008 end=0x80203008 bytes=0
+=== C PRINTF ===
+Hardware assisted breakpoint 4 at 0x80200056: file kern/libs/stdio.c, line 40.
+
+Temporary breakpoint 4, cprintf (fmt=fmt@entry=0x802004e8 "%s\n\n") at kern/libs/stdio.c:40
+40	    va_start(ap, fmt);
+pc             0x80200056	0x80200056 <cprintf>
+sp             0x80202ff0	0x80202ff0
+a0             0x802004e8	2149582056
+a1             0x802004c8	2149582024
+0x802004e8:	"%s\n\n"
+0x802004c8:	"(THU.CST) os is loading ...\n"
+#0  cprintf (fmt=fmt@entry=0x802004e8 "%s\n\n") at kern/libs/stdio.c:40
+#1  0x000000008020003a in kern_init () at kern/init/init.c:11
+#2  0x00000000800078cc in ?? ()
+PASS cprintf-reached
+=== SBI ECALL ===
+Hardware assisted breakpoint 5 at 0x80200492: file libs/sbi.c, line 18.
+
+Temporary breakpoint 5, 0x0000000080200492 in sbi_call (arg2=0, arg1=0, arg0=40, sbi_type=1) at libs/sbi.c:18
+18	    __asm__ volatile (
+pc             0x80200492	0x80200492 <sbi_console_putchar+18>
+a0             0x28	40
+a7             0x1	1
+PASS legacy-sbi-putchar-arguments
+Firmware trap entry: 0x80000520
+Hardware assisted breakpoint 6 at 0x80000520
+
+Temporary breakpoint 6, 0x0000000080000520 in ?? ()
+pc             0x80000520	0x80000520
+PASS ecall-traps-to-firmware
+Hardware assisted breakpoint 7 at 0x80200496: file libs/sbi.c, line 18.
+
+Temporary breakpoint 7, 0x0000000080200496 in sbi_call (arg2=0, arg1=0, arg0=0, sbi_type=1) at libs/sbi.c:18
+18	    __asm__ volatile (
+pc             0x80200496	0x80200496 <sbi_console_putchar+22>
+PASS sbi-returns-to-kernel
+[Inferior 1 (process 1) detached]

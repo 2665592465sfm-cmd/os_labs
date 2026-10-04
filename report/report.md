@@ -365,6 +365,14 @@ a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
 
 Linux 与 Windows 的编译器、固件不同，部分地址及镜像哈希不同；启动行为和两道练习结论一致。Ubuntu 中实际执行 `make grade` 仍因缺少 `tools/grade.sh` 返回 2，见 [official-grade.log](evidence/ubuntu/official-grade.log)。该目标先清理构建产物，随后已重新构建恢复运行目录。本节目前提供真实文本日志，Ubuntu 终端窗口截图尚待手动保存。
 
+### 5.7 代为执行编译、运行与检查（2026-10-04 19:19）
+
+组长要求“你帮我操作吧”后，AI 通过命令工具在真实 Ubuntu 目录依次执行 `make -B`、`make qemu` 和 `make check`。重新编译成功，QEMU 打印 `(THU.CST) os is loading ...` 后，通过输入流发送 Ctrl+A、X 正常退出，退出码为 0；13 项本地检查再次全部通过。镜像 SHA256 与 5.6 的 Ubuntu 结果相同。
+
+本轮原始证据：[编译日志](evidence/ubuntu/run-20261004-191910/build.log)、[make qemu 日志](evidence/ubuntu/run-20261004-191910/make-qemu.log)、[make check 日志](evidence/ubuntu/run-20261004-191910/check.log)、[GDB 会话](evidence/ubuntu/run-20261004-191910/boot/gdb.log)、[验证结果](evidence/ubuntu/run-20261004-191910/boot/summary.json)、[执行记录](evidence/ubuntu/run-20261004-191910/execution.json)。QEMU 已正常退出，没有留下本轮仿真进程。
+
+本轮没有生成新的窗口截图，不能把原始文本文件称为截图。现有日志展示图片继续保留，真实终端窗口截图仍需手动保存；本轮未执行上传。
+
 ---
 
 ## 六、实验总结与收获
