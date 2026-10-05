@@ -159,20 +159,22 @@ TARGETS: $(TARGETS)
 .DEFAULT_GOAL := TARGETS
 
 .PHONY: qemu
+QEMU_IMAGE_ARGS ?= -device loader,file=$(UCOREIMG),addr=0x80200000
+CHECK_LOADER ?= device
 qemu: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 #	$(V)$(QEMU) -kernel $(UCOREIMG) -nographic
 	$(V)$(QEMU) \
 		-machine virt \
 		-nographic \
 		-bios default \
-		-kernel $(UCOREIMG)
+		$(QEMU_IMAGE_ARGS)
 
 debug: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 	$(V)$(QEMU) \
 		-machine virt \
 		-nographic \
 		-bios default \
-		-kernel $(UCOREIMG)\
+		$(QEMU_IMAGE_ARGS)\
 		-s -S
 
 gdb:
@@ -185,7 +187,7 @@ gdb:
 PYTHON ?= python3
 .PHONY: check
 check: $(UCOREIMG)
-	$(PYTHON) tools/verify_boot.py --qemu $(QEMU) --gdb $(GDB)
+	$(PYTHON) tools/verify_boot.py --qemu $(QEMU) --gdb $(GDB) --objdump $(OBJDUMP) --loader-mode $(CHECK_LOADER)
 
 	
 .PHONY: grade touch

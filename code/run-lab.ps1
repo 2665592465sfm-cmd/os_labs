@@ -21,7 +21,10 @@ $originalPath = $env:Path
 $env:Path = "$gccBin;$makeBin;$qemuBin;C:\Program Files\Git\usr\bin;$originalPath"
 Push-Location $PSScriptRoot
 try {
-    $makeArgs = @('GCCPREFIX=riscv-none-elf-', 'QEMU=qemu-system-riscv64', "PYTHON=$Python")
+    # Historical Windows QEMU 7.2 needs the dynamic-firmware kernel argument.
+    # The required course environment is now Ubuntu with exact QEMU 4.1.1.
+    $makeArgs = @('GCCPREFIX=riscv-none-elf-', 'QEMU=qemu-system-riscv64', "PYTHON=$Python",
+                  'QEMU_IMAGE_ARGS=-kernel bin/ucore.img', 'CHECK_LOADER=kernel')
     if ($Rebuild) { $makeArgs += '-B' }
     switch ($Action) {
         'build' { }

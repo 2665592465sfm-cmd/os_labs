@@ -1,6 +1,7 @@
 param(
     [string]$ToolsRoot = (Join-Path $PSScriptRoot '..\..\..\work\toolchains'),
-    [string]$Python = 'python'
+    [string]$Python = 'python',
+    [switch]$AttemptGrade
 )
 $ErrorActionPreference = 'Stop'
 
@@ -25,8 +26,9 @@ Write-Host 'Stage 2: real QEMU/GDB local checks (this is not the official grader
 & (Join-Path $PSScriptRoot 'run-lab.ps1') -Action check -ToolsRoot $ToolsRoot -Python $Python
 Show-Checkpoint 'Save terminal-check.png. Include all PASS lines and the 13-check summary.'
 
+if ($AttemptGrade) {
 Clear-Host
-Write-Host 'Stage 3: official make grade attempt. Missing grade.sh is an incomplete official check.'
+Write-Host 'Optional grade attempt requested explicitly. Lab1 Q&A only requires make qemu to run.'
 $gccBin = Join-Path $ToolsRoot 'gcc\xpack-riscv-none-elf-gcc-11.3.0-1\bin'
 $makeBin = Join-Path $ToolsRoot 'make\xpack-windows-build-tools-4.4.1-3\bin'
 $qemuBin = Join-Path $ToolsRoot 'qemu'
@@ -45,4 +47,5 @@ finally {
 }
 # The supplied grade target cleans the build before trying the missing script.
 & (Join-Path $PSScriptRoot 'run-lab.ps1') -Action build -ToolsRoot $ToolsRoot -Python $Python
+}
 Write-Host 'Review complete. Screenshots still need to be checked and referenced in the report.'

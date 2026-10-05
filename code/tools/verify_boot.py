@@ -30,6 +30,7 @@ def main():
     parser.add_argument('--qemu', default='qemu-system-riscv64')
     parser.add_argument('--gdb', default='riscv64-unknown-elf-gdb')
     parser.add_argument('--objdump')
+    parser.add_argument('--loader-mode', choices=['device', 'kernel'], default='device')
     parser.add_argument('--output', default='test-output')
     args = parser.parse_args()
     out = (ROOT / args.output).resolve()
@@ -55,8 +56,13 @@ def main():
     commands += 'info registers pc\nx/10i 0x1000\nx/4gx 0x1018\nx/4wx 0x80200000\n'
     commands += check_gdb('$pc == 0x1000', 'reset-pc')
     commands += check_gdb(f'*(unsigned int*)0x80200000 == {first_word}', 'image-already-loaded-at-reset')
-    commands += 'echo === SIX RESET INSTRUCTIONS ===\\n\n'
-    commands += ('si\ninfo registers pc\n' * 6)
+    # QEMU 4.1.1 has five reset instructions; later versions have six.
+    # Step the observed reset stub until it actually transfers to firmware.
+    commands += 'echo === RESET INSTRUCTIONS UNTIL FIRMWARE ===\\n\n'
+    commands += ('set $reset_steps = 0\n'
+                 'while $pc >= 0x1000 && $pc < 0x1100 && $reset_steps < 16\n'
+                 '  si\n  info registers pc\n'
+                 '  set $reset_steps = $reset_steps + 1\nend\n')
     commands += check_gdb('$pc == 0x80000000', 'reset-to-opensbi')
     commands += 'info registers pc a0 a1 a2\nx/6i $pc\n'
     commands += 'echo === OPENSBI TO KERNEL ===\\n\n'
@@ -91,9 +97,12 @@ def main():
     (out / 'boot-session.gdb').write_text(commands, encoding='utf-8')
     qemu_command = [args.qemu, '-machine', 'virt', '-m', '128M', '-smp', '1',
                     '-nographic', '-bios', 'default', '-monitor', 'none',
-                    '-kernel', 'bin/ucore.img',
                     '-d', 'int', '-D', str(out / 'traps.log'),
                     '-S', '-gdb', f'tcp:127.0.0.1:{port}']
+    if args.loader_mode == 'device':
+        qemu_command += ['-device', 'loader,file=bin/ucore.img,addr=0x80200000']
+    else:
+        qemu_command += ['-kernel', 'bin/ucore.img']
     with (out / 'qemu.log').open('wb') as serial:
         process = subprocess.Popen(qemu_command, cwd=ROOT, stdout=serial,
                                    stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
