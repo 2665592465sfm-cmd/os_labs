@@ -76,6 +76,8 @@ powershell -ExecutionPolicy Bypass -File .\run-lab.ps1 -Action check
 
 ### 实际终端截图
 
+2026-10-05 已收到组长提供的六张真实 Ubuntu 终端截图，覆盖 `make -B`、`make check`、`make qemu` 上下两部分及 GDB 上下两部分。图片位于 `../report/images/ubuntu-*.png`，原始附件对应关系和校验值见 `../report/evidence/ubuntu/user-terminal-screenshots.json`。报告正文采用这组截图和 Ubuntu 实测值。
+
 在自己打开的 PowerShell 中运行下面的命令。脚本实际执行构建、QEMU 和验证命令，在每个阶段暂停，提示截图文件名。QEMU 输出内核启动信息后，按 Ctrl+A、松开、再按 X 退出，继续截图。
 
 ```powershell
@@ -84,7 +86,7 @@ powershell -ExecutionPolicy Bypass -File .\review-lab.ps1 -Python "D:/python/pyt
 
 其他电脑应把 `-Python` 改为自己的 Python 路径；工具不在默认位置时，另传 `-ToolsRoot`。将 `terminal-build.png`、`terminal-qemu.png`、`terminal-check.png`、`terminal-grade.png` 保存到仓库的 `report/images`。截取完整的命令与结果；窗口较小时可分别截取，不应改写错误信息。
 
-当前尚未补入这四张终端截图。原有 JPG 是真实日志的浏览器展示截图。`grade` 如仍提示缺少脚本，应保存实际报错，不能把它记成评分通过。截图脚本不会上传仓库。
+上述脚本用于重跑 Windows 验证；当前交付已使用六张 Ubuntu 终端截图。原有 JPG 是真实 Windows 日志的浏览器展示图，作为报告附录保留。`grade` 如仍提示缺少脚本，应保存实际报错，不能把它记成评分通过。截图脚本不会上传仓库。
 
 `make check` 是本实验新增的本地验证，不是教师提供的评分器。它真实启动 QEMU 并连接 GDB，保存调试日志、串口日志、校验结果和镜像 SHA256 到 `test-output`。
 

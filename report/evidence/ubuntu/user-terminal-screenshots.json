@@ -1,0 +1,81 @@
+{
+  "received_date": "2026-10-05",
+  "source": "User supplied actual Ubuntu terminal screenshots",
+  "user_correction": "Use these six images for the three make commands and GDB instead of the prior single screenshot.",
+  "images": [
+    {
+      "attachment": "0ba714d261f0a163b0982a9c8b230222.png",
+      "saved_as": "report/images/ubuntu-build.png",
+      "sha256": "9ea4d478dbe249fe64bdf7d5b57cb3f75097ae14906bf42b6d8e2ad859e6ebbc",
+      "dimensions": [
+        1167,
+        327
+      ],
+      "command": "make -B",
+      "observed": "Eight compilation units, linking and binary image conversion",
+      "content_edited": false
+    },
+    {
+      "attachment": "59192e153cd3f868449ccd93af69f374.png",
+      "saved_as": "report/images/ubuntu-check.png",
+      "sha256": "93cb355ad878ce404895a992233c7bd254d3454cd0554de94d2287b3c9ae6008",
+      "dimensions": [
+        1485,
+        456
+      ],
+      "command": "make check",
+      "observed": "Thirteen PASS assertions and total result",
+      "content_edited": false
+    },
+    {
+      "attachment": "2bc82483730794101b29f6a6ec1b05ef.png",
+      "saved_as": "report/images/ubuntu-qemu-opensbi.png",
+      "sha256": "2e0acac5bbe0590547e6a2ccabad75195a4e59cc85ea8ac876fcb89f2d04623c",
+      "dimensions": [
+        1284,
+        802
+      ],
+      "command": "make qemu (first part)",
+      "observed": "OpenSBI v0.9, next address 0x80200000 and S-mode",
+      "content_edited": false
+    },
+    {
+      "attachment": "d66d4068274d8c15670fa4e274aadf04.png",
+      "saved_as": "report/images/ubuntu-qemu-kernel.png",
+      "sha256": "192ec91d0f438479a660541274bb0a1606b65257d68ca1f3ee79a84d7fdd362a",
+      "dimensions": [
+        1098,
+        408
+      ],
+      "command": "make qemu (second part)",
+      "observed": "Kernel startup string",
+      "content_edited": false
+    },
+    {
+      "attachment": "33d2bfb1ea80b86517cf84d37f9e5d10.png",
+      "saved_as": "report/images/ubuntu-gdb-reset.png",
+      "sha256": "6afa35322fb9058acd874353644b4a1cc0e6e5f0ce25dd442e5850011becc2e6",
+      "dimensions": [
+        1468,
+        849
+      ],
+      "command": "GDB (first part)",
+      "observed": "Reset 0x1000, firmware 0x80000000, kernel entry 0x80200000",
+      "content_edited": false
+    },
+    {
+      "attachment": "3f37ba4d6baece51fb0736991b1b2ebb.png",
+      "saved_as": "report/images/ubuntu-gdb-stack.png",
+      "sha256": "f4700f3700daa571afcf396a07d7a1da69d1f9d00204e52715774bb30f5d5801",
+      "dimensions": [
+        1320,
+        513
+      ],
+      "command": "GDB (second part)",
+      "observed": "Stack 0x80203000, kern_init 0x8020000a, unchanged RA 0x800078cc",
+      "content_edited": false
+    }
+  ],
+  "official_grade": "tools/grade.sh absent; not passed",
+  "uploaded": false
+}

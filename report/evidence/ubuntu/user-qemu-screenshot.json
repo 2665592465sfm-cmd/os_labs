@@ -13,5 +13,7 @@
     "QEMU terminated",
     "Ubuntu shell prompt"
   ],
-  "uploaded": false
+  "uploaded": false,
+  "status": "Superseded as primary evidence by user correction on 2026-10-05",
+  "replacement_manifest": "user-terminal-screenshots.json"
 }
