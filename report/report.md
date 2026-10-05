@@ -227,7 +227,7 @@ a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
 
 镜像未因切换模拟器而改变；栈底 `0x80201000`、栈顶 `0x80203000`，大小8192字节。当前BSS的 `edata=end=0x80203008`，没有非空BSS逐字节清零的测试。
 
-还需补充指定环境的实际终端截图：版本与编译、make qemu、GDB复位与入口、GDB建栈与tail。建议分别保存为 `images/qemu411-version-build.png`、`images/qemu411-qemu.png`、`images/qemu411-gdb-reset.png`、`images/qemu411-gdb-stack.png`；若保留额外检查截图，可另存 `images/qemu411-check.png`。当前不添加不存在的图片引用。
+还需补充指定环境的实际终端截图：版本与编译、make qemu、GDB复位与入口、GDB建栈与tail。建议分别保存为 `images/qemu411-version-build.png`、`images/qemu411-qemu.png`、`images/qemu411-gdb-reset.png`、`images/qemu411-gdb-entry.png`、`images/qemu411-gdb-stack.png`；若保留额外检查截图，可另存 `images/qemu411-check.png`。当前不添加不存在的图片引用。
 
 ---
 
@@ -294,7 +294,7 @@ a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
 
 ## 附录 B：早期 Windows 验证与补齐记录
 
-以下五张 JPG 为浏览器展示真实 Windows 日志的截图；本次主要交付截图已经使用正文中的六张 Ubuntu 终端截图。
+以下五张JPG是此前Windows日志展示截图；旧Ubuntu6.2的六张终端截图保留在附录C。当前正文采用指定QEMU4.1.1的真实日志，该版本的新终端截图仍待补齐。
 
 ### B.1 编译与运行
 
