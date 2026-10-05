@@ -86,10 +86,15 @@ def main():
     # QEMU/GDB combinations differ in whether stepi stops inside an ecall
     # handler. If CSR registers are available, break at the actual mtvec entry.
     # Older Windows GDB builds without target XML retain the measured fallback.
-    commands += ('if $_isvoid($mtvec)\n  si\nelse\n'
-                 '  set $trap_entry = (unsigned long)$mtvec & ~3\n'
-                 '  printf "Firmware trap entry: 0x%lx\\n", $trap_entry\n'
-                 '  thbreak *$trap_entry\n  continue\nend\ninfo registers pc\n')
+    if 'version 4.1.1' in versions['qemu']:
+        # Its stub exposes CSR names but returns E14 for M-mode CSR reads
+        # while halted in S-mode. Observe the ecall directly instead.
+        commands += 'si\ninfo registers pc\n'
+    else:
+        commands += ('if $_isvoid($mtvec)\n  si\nelse\n'
+                     '  set $trap_entry = (unsigned long)$mtvec & ~3\n'
+                     '  printf "Firmware trap entry: 0x%lx\\n", $trap_entry\n'
+                     '  thbreak *$trap_entry\n  continue\nend\ninfo registers pc\n')
     commands += check_gdb('$pc >= 0x80000000 && $pc < 0x80200000', 'ecall-traps-to-firmware')
     commands += f'thbreak *0x{ecall + 4:x}\ncontinue\ninfo registers pc\n'
     commands += check_gdb(f'$pc == 0x{ecall + 4:x}', 'sbi-returns-to-kernel')
