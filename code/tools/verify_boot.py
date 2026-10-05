@@ -105,6 +105,11 @@ def main():
                      '  printf "Firmware trap entry: 0x%lx\\n", $trap_entry\n'
                      '  thbreak *$trap_entry\n  continue\nend\ninfo registers pc\n')
     commands += check_gdb('$pc >= 0x80000000 && $pc < 0x80200000', 'ecall-traps-to-firmware')
+    if 'version 4.1.1' in versions['qemu']:
+        # Older -d int output logs the initial generic ecall index (8),
+        # before privilege-specific conversion. Check architectural CSRs.
+        commands += 'info registers mcause mepc\n'
+        commands += check_gdb(f'$mcause == 9 && $mepc == 0x{ecall:x}', 'supervisor-ecall-cause-9')
     commands += f'thbreak *0x{ecall + 4:x}\ncontinue\ninfo registers pc\n'
     commands += check_gdb(f'$pc == 0x{ecall + 4:x}', 'sbi-returns-to-kernel')
     commands += 'detach\nquit\n'
@@ -157,14 +162,18 @@ def main():
     if '(THU.CST) os is loading ...' not in serial_output:
         raise RuntimeError('Kernel startup message not present')
     checks = re.findall(r'^PASS (.+)$', result.stdout, re.M)
-    if len(checks) != 11:
-        raise RuntimeError(f'Expected 11 GDB checks, received {len(checks)}')
+    legacy_qemu = 'version 4.1.1' in versions['qemu']
+    expected_gdb_checks = 12 if legacy_qemu else 11
+    if len(checks) != expected_gdb_checks:
+        raise RuntimeError(f'Expected {expected_gdb_checks} GDB checks, received {len(checks)}')
     traps = (out / 'traps.log').read_text(encoding='utf-8', errors='replace')
-    if not re.search(rf'cause:0*9, epc:0x0*{ecall:x}\b', traps):
+    if not legacy_qemu and not re.search(rf'cause:0*9, epc:0x0*{ecall:x}\b', traps):
         raise RuntimeError('QEMU trace did not confirm an ecall from S-mode (cause=9)')
-    summary = {'versions': versions, 'checks': checks + ['kernel-startup-message', 'supervisor-ecall-cause-9'],
+    extra_checks = ['kernel-startup-message'] if legacy_qemu else ['kernel-startup-message', 'supervisor-ecall-cause-9']
+    summary = {'versions': versions, 'checks': checks + extra_checks,
                'passed': True, 'kernel_sha256': hashlib.sha256(image).hexdigest(),
                'qemu_command': qemu_command,
+               'supervisor_ecall_evidence': 'GDB mcause/mepc at real firmware trap entry' if legacy_qemu else 'QEMU cause9/epc trace',
                'note': 'Local checks only; no course tools/grade.sh was provided.'}
     (out / 'summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding='utf-8')
     print('\n'.join('PASS ' + item for item in summary['checks']))
