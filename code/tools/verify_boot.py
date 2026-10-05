@@ -87,9 +87,18 @@ def main():
     # handler. If CSR registers are available, break at the actual mtvec entry.
     # Older Windows GDB builds without target XML retain the measured fallback.
     if 'version 4.1.1' in versions['qemu']:
-        # Its stub exposes CSR names but returns E14 for M-mode CSR reads
-        # while halted in S-mode. Observe the ecall directly instead.
-        commands += 'si\ninfo registers pc\n'
+        # Its stub cannot fetch M-mode CSRs while halted in S-mode, and si
+        # runs the entire ecall handler. Read actual mtvec through HMP.
+        commands += ('python\nimport re\n'
+                     'registers = gdb.execute("monitor info registers", to_string=True)\n'
+                     'gdb.write(registers)\n'
+                     'vector = re.search(r"mtvec\\s+(?:0x)?([0-9a-fA-F]+)", registers)\n'
+                     'if vector is None:\n'
+                     '    raise gdb.GdbError("QEMU monitor did not expose mtvec")\n'
+                     'trap_entry = int(vector.group(1), 16) & ~3\n'
+                     'gdb.write("Firmware trap entry: 0x%x\\n" % trap_entry)\n'
+                     'gdb.execute("thbreak *0x%x" % trap_entry)\nend\n'
+                     'continue\ninfo registers pc\n')
     else:
         commands += ('if $_isvoid($mtvec)\n  si\nelse\n'
                      '  set $trap_entry = (unsigned long)$mtvec & ~3\n'
