@@ -1,0 +1,6 @@
+ed6fdbbdd272611446ff8036991e9b9f04a2ab2e3ffa9e79f3bab0eb9a95a1d2  /home/sfm/os-course/downloads/qemu/qemu-4.1.1.tar.xz
+Configuring QEMU 4.1.1 for the two recommended RISC-V system targets.
+Building with 4 jobs. Full log: /home/sfm/os-course/setup-logs/qemu-4.1.1/build.log
+QEMU emulator version 4.1.1
+Copyright (c) 2003-2019 Fabrice Bellard and the QEMU Project developers
+Installed course QEMU at /home/sfm/.local/share/os-course/qemu-4.1.1

@@ -1,0 +1,31 @@
+{
+  "started_at": "2026-10-05T23:51:04.036052+08:00",
+  "finished_at": "2026-10-05T23:51:06.204733+08:00",
+  "qemu": "QEMU emulator version 4.1.1",
+  "qemu_executable": "/home/sfm/.local/share/os-course/qemu-4.1.1/bin/qemu-system-riscv64",
+  "source_url": "https://download.qemu.org/qemu-4.1.1.tar.xz",
+  "source_sha256": "ed6fdbbdd272611446ff8036991e9b9f04a2ab2e3ffa9e79f3bab0eb9a95a1d2",
+  "source_archive_checksum_note": "Digest recorded from official HTTPS download; not a separate publisher checksum verification.",
+  "make_qemu_command": [
+    "make",
+    "QEMU=/home/sfm/.local/share/os-course/qemu-4.1.1/bin/qemu-system-riscv64",
+    "qemu"
+  ],
+  "make_qemu_exit": 0,
+  "original_loader_command": [
+    "/home/sfm/.local/share/os-course/qemu-4.1.1/bin/qemu-system-riscv64",
+    "-machine",
+    "virt",
+    "-nographic",
+    "-bios",
+    "default",
+    "-device",
+    "loader,file=bin/ucore.img,addr=0x80200000"
+  ],
+  "original_loader_exit": 0,
+  "checks_passed": 13,
+  "kernel_sha256": "a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd",
+  "source_commit": "9ab248d6c2e5108816779acf2b8f4fc580f268ad",
+  "capture_method": "Actual command output; no new user terminal screenshots yet.",
+  "uploaded": false
+}

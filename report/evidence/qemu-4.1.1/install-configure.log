@@ -1,0 +1,149 @@
+Install prefix    /home/sfm/.local/share/os-course/qemu-4.1.1
+BIOS directory    /home/sfm/.local/share/os-course/qemu-4.1.1/share/qemu
+firmware path     /home/sfm/.local/share/os-course/qemu-4.1.1/share/qemu-firmware
+binary directory  /home/sfm/.local/share/os-course/qemu-4.1.1/bin
+library directory /home/sfm/.local/share/os-course/qemu-4.1.1/lib
+module directory  /home/sfm/.local/share/os-course/qemu-4.1.1/lib/qemu
+libexec directory /home/sfm/.local/share/os-course/qemu-4.1.1/libexec
+include directory /home/sfm/.local/share/os-course/qemu-4.1.1/include
+config directory  /home/sfm/.local/share/os-course/qemu-4.1.1/etc
+local state directory   /home/sfm/.local/share/os-course/qemu-4.1.1/var
+Manual directory  /home/sfm/.local/share/os-course/qemu-4.1.1/share/man
+ELF interp prefix /usr/gnemul/qemu-%M
+Source path       /home/sfm/os-course/toolchains/qemu-4.1.1-source
+GIT binary        git
+GIT submodules    
+C compiler        cc
+Host C compiler   cc
+C++ compiler      c++
+Objective-C compiler cc
+ARFLAGS           rv
+CFLAGS            -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -g 
+QEMU_CFLAGS       -I/usr/include/pixman-1 -I$(SRC_PATH)/dtc/libfdt  -pthread -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -fPIE -DPIE -m64 -mcx16 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -Wstrict-prototypes -Wredundant-decls -Wall -Wundef -Wwrite-strings -Wmissing-prototypes -fno-strict-aliasing -fno-common -fwrapv -std=gnu99  -Wexpansion-to-defined -Wendif-labels -Wno-shift-negative-value -Wno-missing-include-dirs -Wempty-body -Wnested-externs -Wformat-security -Wformat-y2k -Winit-self -Wignored-qualifiers -Wold-style-declaration -Wold-style-definition -Wtype-limits -fstack-protector-strong -I$(SRC_PATH)/capstone/include
+LDFLAGS           -Wl,--warn-common -Wl,-z,relro -Wl,-z,now -pie -m64 -g 
+QEMU_LDFLAGS      -L$(BUILD_DIR)/dtc/libfdt 
+make              make
+install           install
+python            python3 -B (3.10.12)
+slirp support     internal 
+smbd              /usr/sbin/smbd
+module support    no
+host CPU          x86_64
+host big endian   no
+target list       riscv32-softmmu riscv64-softmmu
+gprof enabled     no
+sparse enabled    no
+strip binaries    yes
+profiler          no
+static build      no
+SDL support       no 
+SDL image support no
+GTK support       no 
+GTK GL support    no
+VTE support       no 
+TLS priority      NORMAL
+GNUTLS support    no
+libgcrypt         no
+nettle            no 
+libtasn1          no
+PAM               no
+iconv support     yes
+curses support    no
+virgl support     no 
+curl support      no
+mingw32 support   no
+Audio drivers      oss
+Block whitelist (rw) 
+Block whitelist (ro) 
+VirtFS support    no
+Multipath support no
+VNC support       yes
+VNC SASL support  no
+VNC JPEG support  no
+VNC PNG support   no
+xen support       no
+brlapi support    no
+bluez  support    no
+Documentation     no
+PIE               yes
+vde support       no
+netmap support    no
+Linux AIO support no
+ATTR/XATTR support yes
+Install blobs     yes
+KVM support       yes
+HAX support       no
+HVF support       no
+WHPX support      no
+TCG support       yes
+TCG debug enabled no
+TCG interpreter   no
+malloc trim support yes
+RDMA support      no
+PVRDMA support    no
+fdt support       git
+membarrier        no
+preadv support    yes
+fdatasync         yes
+madvise           yes
+posix_madvise     yes
+posix_memalign    yes
+libcap-ng support no
+vhost-net support yes
+vhost-crypto support yes
+vhost-scsi support yes
+vhost-vsock support yes
+vhost-user support yes
+Trace backends    log
+spice support     no 
+rbd support       no
+xfsctl support    no
+smartcard support no
+libusb            no
+usb net redir     no
+OpenGL support    no
+OpenGL dmabufs    no
+libiscsi support  no
+libnfs support    no
+build guest agent yes
+QGA VSS support   no
+QGA w32 disk info no
+QGA MSI support   no
+seccomp support   no
+coroutine backend ucontext
+coroutine pool    yes
+debug stack usage no
+mutex debugging   no
+crypto afalg      no
+GlusterFS support no
+gcov              gcov
+gcov enabled      no
+TPM support       yes
+libssh support    no
+QOM debugging     yes
+Live block migration yes
+lzo support       no
+snappy support    no
+bzip2 support     no
+lzfse support     no
+NUMA host support no
+libxml2           no
+tcmalloc support  no
+jemalloc support  no
+avx2 optimization yes
+replication support yes
+VxHS block device no
+bochs support     yes
+cloop support     yes
+dmg support       yes
+qcow v1 support   yes
+vdi support       yes
+vvfat support     yes
+qed support       yes
+parallels support yes
+sheepdog support  yes
+capstone          internal
+docker            no
+libpmem support   no
+libudev           no
+default devices   yes

@@ -1,0 +1,48 @@
+{
+  "versions": {
+    "qemu": "QEMU emulator version 4.1.1",
+    "gdb": "GNU gdb (Ubuntu 12.1-0ubuntu1~22.04.2) 12.1"
+  },
+  "checks": [
+    "reset-pc",
+    "image-already-loaded-at-reset",
+    "reset-to-opensbi",
+    "kernel-entry",
+    "stack-pointer",
+    "stack-size",
+    "tail-does-not-write-ra",
+    "cprintf-reached",
+    "legacy-sbi-putchar-arguments",
+    "ecall-traps-to-firmware",
+    "supervisor-ecall-cause-9",
+    "sbi-returns-to-kernel",
+    "kernel-startup-message"
+  ],
+  "passed": true,
+  "kernel_sha256": "a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd",
+  "qemu_command": [
+    "/home/sfm/.local/share/os-course/qemu-4.1.1/bin/qemu-system-riscv64",
+    "-machine",
+    "virt",
+    "-m",
+    "128M",
+    "-smp",
+    "1",
+    "-nographic",
+    "-bios",
+    "default",
+    "-monitor",
+    "none",
+    "-d",
+    "int",
+    "-D",
+    "/mnt/c/Users/26655/Documents/Codex/2026-09-23/w-2/outputs/os-labs/report/evidence/qemu-4.1.1/boot/traps.log",
+    "-S",
+    "-gdb",
+    "tcp:127.0.0.1:37789",
+    "-device",
+    "loader,file=bin/ucore.img,addr=0x80200000"
+  ],
+  "supervisor_ecall_evidence": "GDB mcause/mepc at real firmware trap entry",
+  "note": "Local checks only; no course tools/grade.sh was provided."
+}

@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/home/sfm/os-course/os-labs/code/tools/verify_boot.py", line 175, in <module>
+    main()
+  File "/home/sfm/os-course/os-labs/code/tools/verify_boot.py", line 164, in main
+    raise RuntimeError('QEMU trace did not confirm an ecall from S-mode (cause=9)')
+RuntimeError: QEMU trace did not confirm an ecall from S-mode (cause=9)
