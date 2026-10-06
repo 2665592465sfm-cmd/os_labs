@@ -6,9 +6,9 @@
 |------|------|
 | **实验名称** | Lab1：最小可执行内核与启动流程 |
 | **小组成员** | 2412396-申丰铭（组长）、2411688-马翔宇、2413992-任诗清 |
-| **本地复核日期** | 2026-10-05（按答疑修正为 QEMU 4.1.1；新截图待补） |
+| **本地复核日期** | 2026-10-06（指定版本五项截图补齐；另两位组员个人实验未完成） |
 
-### 小组分工
+### 小组分工安排
 
 | 成员 | 负责的练习/模块 |
 |------|----------------|
@@ -16,7 +16,13 @@
 | 2411688-马翔宇 | 负责练习1；分析入口汇编、链接脚本、内核栈与调用约定；整理 OS 原理对应关系 |
 | 2413992-任诗清 | 整理测试日志和截图；协助复核练习2；检查报告格式与图片引用 |
 
-报告分工：申丰铭负责整体逻辑、环境、调试过程及主稿整合；马翔宇负责入口汇编解释和知识点总结；任诗清负责证据整理和全文校对。上述为组长授权安排的分工；另两位成员的实际运行与报告复核尚未收到确认，不能据此声称全员已完成。
+报告分工：申丰铭负责整体逻辑、环境、调试过程及主稿整合；马翔宇负责入口汇编解释和知识点总结；任诗清负责证据整理和全文校对。上述为组长授权安排的分工。2026-10-06组长确认马翔宇、任诗清的个人实验暂未完成，后续再完成各自运行、报告复核与心得；当前主稿由组长结合工具协助准备，不能把安排写成两位成员已经完成的工作。
+
+| 成员 | 当前实际进度 |
+|------|--------------|
+| 申丰铭（组长） | 已完成指定环境下的编译、启动与GDB操作，五项正式截图已齐 |
+| 马翔宇 | 未完成；后续完成个人运行，复核练习1和实际心得 |
+| 任诗清 | 未完成；后续完成个人运行，复核测试证据和实际心得 |
 
 ---
 
@@ -49,7 +55,7 @@ Lab1 两项练习分别要求源码分析与启动调试，没有要求实现新
 
 Ubuntu 基础工具版本见此前的 [environment.log](evidence/ubuntu/environment.log)。当前 QEMU 精确版本见 [version.log](evidence/qemu-4.1.1/version.log)，来自[官方4.1.1源码](https://download.qemu.org/qemu-4.1.1.tar.xz)，构建两个推荐的 RISC-V system 目标，安装到用户目录 `~/.local/share/os-course/qemu-4.1.1`。构建配置禁用文档与将警告视为错误；未手工修改QEMU源码或内核源文件。下载的 SHA256 作为来源记录保存，未把它称为独立的发布方签名校验。实际命令、版本、退出码和镜像哈希见 [execution.json](evidence/qemu-4.1.1/execution.json)。
 
-此前依据环境文档“4.1.0以上”使用了6.2，现按答疑“必须是4.1.1”修正。正文采用4.1.1的实际日志；6.2的六张终端截图移至附录C，仅作历史记录。指定版本已收到4/5张正式截图，其余待补，不能把旧图改称新环境结果。
+此前依据环境文档“4.1.0以上”使用了6.2，现按答疑“必须是4.1.1”修正。正文采用4.1.1的实际日志；旧环境记录保存于[早期环境档案](evidence/history/early-environments.md)。指定QEMU4.1.1的五项正式截图及一张GDB启动辅助截图已按原始字节保存。
 
 | 成员 | AI 编程工具 | 底层模型 | 备注 |
 |------|------------|---------|------|
@@ -96,7 +102,7 @@ QEMU 预先装入固件与内核镜像
 
 ### 练习1：理解内核启动中的程序入口操作
 
-**负责人：** 2411688-马翔宇。
+**分工安排：** 2411688-马翔宇；当前个人实验未完成，本节为待其复核的报告草稿。
 
 ```asm
 kern_entry:
@@ -124,7 +130,7 @@ kern_entry:
 
 ### 练习2：使用 GDB 验证启动流程
 
-**负责人：** 2412396-申丰铭；任诗清协助整理证据。
+**负责人：** 2412396-申丰铭；任诗清后续协助复核证据，目前个人实验未完成。
 
 #### 调试过程
 
@@ -199,7 +205,7 @@ a0=0，a1=0x82200000
 
 ## 五、测试与验证
 
-本节采用指定QEMU4.1.1环境的实际命令日志。原6.2截图保留在附录C，指定环境正式终端截图已收到4/5张，其余待补；来源与校验值见[截图清单](evidence/qemu-4.1.1/user-terminal-screenshots.json)。
+本节采用指定QEMU4.1.1环境的实际命令日志。五项指定环境正式截图已经齐全，另有一张GDB启动辅助截图；来源与校验值见[截图清单](evidence/qemu-4.1.1/user-terminal-screenshots.json)。
 
 ### 5.1 编译与版本
 
@@ -219,21 +225,35 @@ Makefile默认恢复为原框架的 `-device loader,file=bin/ucore.img,addr=0x80
 
 ### 5.3 GDB与额外本地检查
 
-![QEMU4.1.1 GDB固件与内核入口真实终端截图](images/qemu411-gdb-entry.png)
+#### 5.3.1 初始化与复位
 
 ![GDB启动并读取内核符号的辅助截图](images/qemu411-gdb-start.png)
 
-辅助图显示GDB12.1启动并读取bin/kernel符号。下方复位图显示目标架构设为riscv:rv64并连接localhost:1234，初始PC为0x1000，五条复位指令与指定版本的实测日志一致。
+辅助图显示GDB12.1启动并读取bin/kernel符号。随后将目标架构设为riscv:rv64，连接QEMU的localhost:1234。
 
 ![QEMU4.1.1 GDB复位指令真实终端截图](images/qemu411-gdb-reset.png)
 
-复位截图还显示一行Missing register name，具体原因仅凭截图未确认。PC数值和五条指令已实际显示，原图按原始字节保留；后续改用p/x $pc核对地址，不把这行提示描述为已消除。
+初始PC为0x1000，五条复位指令与当前版本的独立实测日志一致。该图还显示一行Missing register name，具体原因仅凭截图未确认；后续改用p/x $pc，并在下图正常读到复位、固件和内核入口地址。保留原始图片及这项观测，不声称已查明该提示原因。
 
-复位地址 `0x1000`，五条指令后进入固件 `0x80000000`，随后进入内核 `0x80200000`。此时 `SP=0x8001bd80`、`RA=0x80000a02`；建栈后SP为 `0x80203000`，tail后PC为 `0x8020000a`，RA保持不变。固件陷阱入口 `0x80000470`，读到 `mcause=9`、`mepc=0x80200492`，并返回内核 `0x80200496`。
+#### 5.3.2 固件与内核入口
 
-13项额外本地检查通过；它们不是教师评分器。证据：[check.log](evidence/qemu-4.1.1/check.log)、[gdb.log](evidence/qemu-4.1.1/boot/gdb.log)、[summary.json](evidence/qemu-4.1.1/boot/summary.json)。初次复核依次暴露旧检查器写死六步、旧接口无法读取CSR、单步越过陷阱及旧异常日志格式差异，失败记录保留在对应first/second/third/fourth-attempt目录。修改的是辅助检查器，未修改内核源码。
+![QEMU4.1.1 GDB固件与内核入口真实终端截图](images/qemu411-gdb-entry.png)
 
-### 5.4 验证范围与待补截图
+实际依次停在OpenSBI入口0x80000000和内核入口0x80200000。内核入口SP=0x8001bd80、RA=0x80000a02；kern_entry反汇编显示auipc sp,0x3、mv sp,sp和j kern_init。
+
+#### 5.3.3 建栈与tail跳转
+
+![QEMU4.1.1 GDB建栈与tail真实终端截图](images/qemu411-gdb-stack.png)
+
+前两次单步后PC=0x80200008，栈底0x80201000、栈顶0x80203000，SP已设为栈顶。执行tail对应的跳转后，PC=0x8020000a并进入kern_init，SP仍为0x80203000，RA仍为0x80000a02。这直接验证入口建栈与tail不改写RA的分析。
+
+#### 5.3.4 额外本地检查
+
+13项额外检查通过，它们不是教师评分器。独立自动会话在真实固件陷阱入口0x80000470读到mcause=9、mepc=0x80200492，并观察到返回内核0x80200496；这些额外观测来自自动日志，不写成组长上述五张图中已显示的内容。
+
+证据：[check.log](evidence/qemu-4.1.1/check.log)、[gdb.log](evidence/qemu-4.1.1/boot/gdb.log)、[summary.json](evidence/qemu-4.1.1/boot/summary.json)。辅助检查器适配了旧版复位桩和调试接口，先前失败日志仍保留在对应attempt目录；内核源码未因这些适配而修改。
+
+### 5.4 验证范围与证据完整性
 
 答疑第3条说明Lab1的运行验证以 `make qemu` 能运行为准；据此不再把缺少 `tools/grade.sh` 当作交付门槛。此前按通用模板尝试评分的报错保留在历史证据中，不称为评分通过。
 
@@ -245,7 +265,7 @@ a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
 
 镜像未因切换模拟器而改变；栈底 `0x80201000`、栈顶 `0x80203000`，大小8192字节。当前BSS的 `edata=end=0x80203008`，没有非空BSS逐字节清零的测试。
 
-当前已收到：版本与编译、内核启动、GDB复位指令、GDB固件与内核入口。待补正式截图：GDB建栈与tail。建议分别保存为 `images/qemu411-version-build.png`、`images/qemu411-qemu.png`、`images/qemu411-gdb-reset.png`、`images/qemu411-gdb-entry.png`、`images/qemu411-gdb-stack.png`；若保留额外检查截图，可另存 `images/qemu411-check.png`。当前不添加不存在的图片引用。
+五项正式截图已经齐全，覆盖版本与编译、QEMU启动、GDB复位、固件与内核入口、建栈与tail。辅助启动图另存；原始附件文件名、尺寸、接收日期和SHA256见[截图清单](evidence/qemu-4.1.1/user-terminal-screenshots.json)。图片未裁剪、拼接或改绘；此前WSL代理提示的过程截图依组长要求不计入。
 
 ---
 
@@ -273,11 +293,11 @@ a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
 
 先读取真实框架和课程答疑，再用实际工具验证解释。Lab1 侧重已有代码的理解与启动调试，不能把通用模板的代码生成、提示词和评分项直接当成每次实验的必选要求。本次据答疑删去无须填写的模块实现部分，并将提示词文件留空。
 
-课程答疑第10条说明截图只需一人的，第14条进一步明确每位组员应在自己的电脑上跑通，再共同撰写一份报告。因此现有组长截图可以用于小组交付，但不能代替其他成员各自完成运行。两位组员的运行情况与实际心得尚待反馈，本节不编造个人感悟。
+课程答疑第10条说明截图只需一人的，第14条进一步明确每位组员应在自己的电脑上跑通，再共同撰写一份报告。因此现有组长截图可以用于小组交付，但不能代替其他成员各自完成运行。组长已确认两位组员当前个人实验未完成，后续再完成运行并反馈实际心得；本节不编造个人感悟。
 
 课程答疑第17条要求所有组员参加并发言回答问题，每次实验都须在截止前答辩。第7条给出的 Lab1 截止时间为“大概10月13日左右”，具体日期和安排仍以课程群最终通知为准。
 
-报告应核对实际地址、函数名和截图，不把本地检查写成官方评分。组长补齐的第18条完整问题确认要求QEMU精确版本4.1.1；当前已按该版本重新验证成功，新终端截图仍待补齐，旧6.2日志和截图不能改称4.1.1结果。
+报告应核对实际地址、函数名和截图，不把本地检查写成官方评分。组长补齐的第18条完整问题确认要求QEMU精确版本4.1.1；当前已按该版本重新验证成功，本次指定版本的五项终端截图已补齐，旧环境记录另存证据档案。
 
 ### 参考资料
 
@@ -291,113 +311,7 @@ a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
 
 ---
 
-## 附录 A：早期 Windows 验证环境
 
-初始阶段在 Windows 完成的真实验证保留作历史补充。正文练习使用 Ubuntu 实测值；本附录不把 Windows 日志标为 Linux 会话。
+## 历史证据
 
-| 项目 | 实际配置 |
-|------|----------|
-| 宿主环境 | Windows x86-64、PowerShell |
-| 交叉编译器 | xPack GNU RISC-V Embedded GCC 11.3.0-1；GCC 11.3.0 |
-| 编译目标 | `-march=rv64gc -mabi=lp64d -mcmodel=medany` |
-| 调试器 | xPack GDB 12.1，目标 `riscv:rv64` |
-| 构建工具 | GNU Make 4.4.1，Git for Windows 的 Unix 辅助工具 |
-| 模拟器 | QEMU 7.2.0，`virt`；自动验证使用 1 个 hart、128 MiB RAM |
-| 固件 | QEMU 内置 OpenSBI v1.1，基址 `0x80000000` |
-| 内核入口 | `0x80200000` |
-| 自动验证 | Python 3.13.2 |
-
-完整版本输出见 [environment.log](evidence/environment.log)。工具来自 xPack 官方 GitHub Releases 与 QEMU 官网列出的 Windows 构建站点，下载后核对发布方 SHA256/SHA512。工具保存在本地工作目录，仓库只保存实验源代码和交付文件。
-
-
-## 附录 B：早期 Windows 验证与补齐记录
-
-以下五张JPG是此前Windows日志展示截图；旧Ubuntu6.2的六张终端截图保留在附录C。当前正文采用指定QEMU4.1.1的真实日志，指定环境正式终端截图已收到4/5张，其余待补；来源与校验值见[截图清单](evidence/qemu-4.1.1/user-terminal-screenshots.json)。
-
-### B.1 编译与运行
-
-实际执行 `make GCCPREFIX=riscv-none-elf-`，8 个源文件编译成功，链接和镜像转换成功。`make qemu` 输出固件信息和内核字符串，经 Ctrl+A、X 退出后命令返回 0。
-
-![编译与 QEMU 实际运行日志](images/build-and-qemu.jpg)
-
-原始证据：[build.log](evidence/build.log)、[make-qemu.log](evidence/make-qemu.log)、[elf-layout.log](evidence/elf-layout.log)。
-
-### B.2 复位、内核入口和栈
-
-![GDB 复位与固件入口日志](images/gdb-reset.jpg)
-
-![GDB 内核入口、栈和尾跳转日志](images/gdb-kernel.jpg)
-
-原始证据：[gdb.log](evidence/gdb.log)、[kernel-symbols.log](evidence/kernel-symbols.log)、[entry-disassembly.log](evidence/entry-disassembly.log)。
-
-### B.3 本地自动检查和 SBI 证据
-
-13 项检查包括：复位 PC；复位时镜像已存在；进入 OpenSBI；进入内核；栈顶地址；栈大小；尾跳转不写 RA；到达 `cprintf`；SBI 参数；进入固件异常入口；返回内核；启动字符串；S-mode ecall 原因 9。全部通过。
-
-![13 项本地检查和 SBI 调用证据](images/local-checks.jpg)
-
-原始证据：[local-check.log](evidence/local-check.log)、[traps.log](evidence/traps.log)、[summary.json](evidence/summary.json)。本次镜像 SHA256：
-
-```text
-997228412f63ece956133e3582821b2c5af2014b758ef19fd8ad26c080d38664
-```
-
-### B.4 官方评分器缺失
-
-实际执行 `make grade` 报错：
-
-```text
-sh: can't open 'tools/grade.sh': No such file or directory
-make: *** [Makefile:203: grade] Error 2
-```
-
-![官方评分器缺失的实际输出](images/grade-unavailable.jpg)
-
-原始证据：[official-grade-unavailable.log](evidence/official-grade-unavailable.log)。收到的代码未提供评分脚本，所以不能宣称官方评分通过；上述 `make check` 是补充的本地验证。若教师随后提供原版评分器，需另行检查。
-
-### B.5 按四段式执行的补齐复核
-
-在补齐规格制定后，实际再次执行 `make grade`、构建、`make qemu` 和 `make check`。构建及运行成功，13 项本地检查通过，`make grade` 仍因脚本缺失返回 2。组长确认没有其他代码包或单独评分脚本。课程当前的 Lab1 文件树在 `tools` 下也只列出 `function.mk` 和 `kernel.ld`；这是收到新答疑之前的核对记录；根据答疑第3条，目前不再把该评分项作为 Lab1 待办，不借用其他实验或架构的评分脚本。
-
-复核证据：[build.log](evidence/followup/build.log)、[qemu-run.log](evidence/followup/qemu-run.log)、[local-check.log](evidence/followup/local-check.log)、[gdb.log](evidence/followup/gdb.log)、[official-grade.log](evidence/followup/official-grade.log)、[execution.json](evidence/followup/execution.json)。`execution.json` 保存执行规格 SHA256，可与本次 [task-spec.md](evidence/followup/task-spec.md) 对照。
-
-
-
----
-
-## 附录 C：此前QEMU6.2的真实截图（历史记录）
-
-以下六张图均来自此前Ubuntu的QEMU6.2/OpenSBI0.9环境，原始字节和来源保持不变。它们不能替代指定QEMU4.1.1环境的新截图；相关寄存器值仅解释这次历史运行。
-
-### 5.1 重新编译
-
-![Ubuntu make -B 编译输出](images/ubuntu-build.png)
-
-截图显示八个源文件的编译、`bin/kernel` 的链接及 `objcopy` 生成 `bin/ucore.img`。目标是 RV64 裸机内核，ELF 机器类型和入口见 [elf-layout.log](evidence/ubuntu/elf-layout.log)。独立保存的完整构建日志见 [build.log](evidence/ubuntu/run-20261004-191910/build.log)。
-
-### 5.2 本地自动检查
-
-![Ubuntu make check 的 13 项通过结果](images/ubuntu-check.png)
-
-截图明确显示 `13 local checks passed`。检查覆盖复位 PC、复位时已装入的镜像、进入 OpenSBI、进入内核、栈顶、栈大小、尾跳转保持 RA、到达 `cprintf`、SBI 参数、进入固件陷阱入口、返回内核、启动字符串及 S-mode ecall 原因 9。
-
-原始证据：[check.log](evidence/ubuntu/run-20261004-191910/check.log)、[summary.json](evidence/ubuntu/run-20261004-191910/boot/summary.json)、[traps.log](evidence/ubuntu/run-20261004-191910/boot/traps.log)。`make check` 是本次补充的本地验证，不是教师官方评分器。
-
-### 5.3 QEMU 启动与内核输出
-
-![Ubuntu make qemu 固件输出上部](images/ubuntu-qemu-opensbi.png)
-
-![Ubuntu make qemu 内核输出下部](images/ubuntu-qemu-kernel.png)
-
-两图共同展示同一类启动过程：OpenSBI v0.9 的固件基址为 `0x80000000`，下一阶段地址为 `0x80200000`，下一阶段特权级为 S-mode；内核输出 `(THU.CST) os is loading ...`。之后框架停在无限循环，符合预期。独立完整日志见 [make-qemu.log](evidence/ubuntu/run-20261004-191910/make-qemu.log)。两张新截图本身未显示退出步骤；此前真实自动运行日志显示正常退出，退出码为 0，见 [execution.json](evidence/ubuntu/run-20261004-191910/execution.json)。
-
-### 5.4 GDB 复位、内核入口与栈
-
-![Ubuntu GDB 从复位进入固件和内核](images/ubuntu-gdb-reset.png)
-
-![Ubuntu GDB 建栈和尾跳转](images/ubuntu-gdb-stack.png)
-
-第五张图观察到初始 PC 为 `0x1000`，复位桩后进入固件 `0x80000000`，随后断点停在内核入口 `0x80200000`。进入内核时 SP 为 `0x80017ee0`，RA 为 `0x800078cc`。
-
-第六张图显示入口反汇编为 `auipc sp,0x3`、`mv sp,sp` 和 `j kern_init`；执行建栈后 SP 为 `0x80203000`，随后 PC 为 `0x8020000a <kern_init>`，RA 仍为 `0x800078cc`。这与练习 1 对建栈和尾跳转的分析一致。独立完整 GDB 会话见 [gdb.log](evidence/ubuntu/boot/gdb.log)。
-
+早期Windows和Ubuntu/QEMU6.2的运行记录保存在[早期环境档案](evidence/history/early-environments.md)，用于追溯此前过程。当前实验的结论和截图以本报告的QEMU4.1.1证据为准。

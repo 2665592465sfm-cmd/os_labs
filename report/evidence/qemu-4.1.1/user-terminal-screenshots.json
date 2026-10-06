@@ -49,11 +49,21 @@
         837
       ],
       "method": "Original screenshot bytes; not edited or generated"
+    },
+    {
+      "role": "gdb-stack",
+      "original_file": "codex-clipboard-63b1a1eb-15db-4c7f-9156-57bb9d714f01.png",
+      "saved_as": "report/images/qemu411-gdb-stack.png",
+      "received_date": "2026-10-06",
+      "sha256": "d1d3bd2220dc15ec00dbb651582c52810f7d316ad3c3d9491c3b68c19e73a0e5",
+      "dimensions": [
+        1429,
+        708
+      ],
+      "method": "Original screenshot bytes; not edited or generated"
     }
   ],
-  "pending_roles": [
-    "gdb-stack"
-  ],
+  "pending_roles": [],
   "excluded_process_screenshots": [
     "codex-clipboard-eb1c3d68-1fb3-4f5a-99da-ec41623f1bed.png"
   ],
