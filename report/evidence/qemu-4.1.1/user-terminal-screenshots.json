@@ -24,14 +24,40 @@
         697
       ],
       "method": "Original screenshot bytes; not edited or generated"
+    },
+    {
+      "role": "gdb-reset",
+      "original_file": "屏幕截图 2026-10-06 142559.png",
+      "saved_as": "report/images/qemu411-gdb-reset.png",
+      "received_date": "2026-10-06",
+      "sha256": "abfb29316ad38d4cad88384d69063c1a93580125045cffde82ae82b7eb879c00",
+      "dimensions": [
+        1311,
+        502
+      ],
+      "method": "Original screenshot bytes; not edited or generated",
+      "observation": "PC=0x1000 and five reset instructions match; Missing register name also appears. Cause unconfirmed; image preserved unchanged."
     }
   ],
   "pending_roles": [
-    "gdb-reset",
     "gdb-entry",
     "gdb-stack"
   ],
   "excluded_process_screenshots": [
     "codex-clipboard-eb1c3d68-1fb3-4f5a-99da-ec41623f1bed.png"
+  ],
+  "supporting_images": [
+    {
+      "role": "gdb-start",
+      "original_file": "屏幕截图 2026-10-06 141900.png",
+      "saved_as": "report/images/qemu411-gdb-start.png",
+      "received_date": "2026-10-06",
+      "sha256": "67d74537767d991a213b64f481096b7ba67e2a109ef76b0e8268a80a3347eafa",
+      "dimensions": [
+        1474,
+        618
+      ],
+      "method": "Original screenshot bytes; not edited or generated"
+    }
   ]
 }
