@@ -12,10 +12,21 @@
         435
       ],
       "method": "Original screenshot bytes; not edited or generated"
+    },
+    {
+      "role": "qemu",
+      "original_file": "屏幕截图 2026-10-06 135817.png",
+      "saved_as": "report/images/qemu411-qemu.png",
+      "received_date": "2026-10-06",
+      "sha256": "5eec168829359de0bcbd61ed5f3957fd9db524389731d5805642cd8dfe832c50",
+      "dimensions": [
+        1198,
+        697
+      ],
+      "method": "Original screenshot bytes; not edited or generated"
     }
   ],
   "pending_roles": [
-    "qemu",
     "gdb-reset",
     "gdb-entry",
     "gdb-stack"

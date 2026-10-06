@@ -49,7 +49,7 @@ Lab1 两项练习分别要求源码分析与启动调试，没有要求实现新
 
 Ubuntu 基础工具版本见此前的 [environment.log](evidence/ubuntu/environment.log)。当前 QEMU 精确版本见 [version.log](evidence/qemu-4.1.1/version.log)，来自[官方4.1.1源码](https://download.qemu.org/qemu-4.1.1.tar.xz)，构建两个推荐的 RISC-V system 目标，安装到用户目录 `~/.local/share/os-course/qemu-4.1.1`。构建配置禁用文档与将警告视为错误；未手工修改QEMU源码或内核源文件。下载的 SHA256 作为来源记录保存，未把它称为独立的发布方签名校验。实际命令、版本、退出码和镜像哈希见 [execution.json](evidence/qemu-4.1.1/execution.json)。
 
-此前依据环境文档“4.1.0以上”使用了6.2，现按答疑“必须是4.1.1”修正。正文采用4.1.1的实际日志；6.2的六张终端截图移至附录C，仅作历史记录。指定版本已收到1/5张正式截图，其余待补，不能把旧图改称新环境结果。
+此前依据环境文档“4.1.0以上”使用了6.2，现按答疑“必须是4.1.1”修正。正文采用4.1.1的实际日志；6.2的六张终端截图移至附录C，仅作历史记录。指定版本已收到2/5张正式截图，其余待补，不能把旧图改称新环境结果。
 
 | 成员 | AI 编程工具 | 底层模型 | 备注 |
 |------|------------|---------|------|
@@ -199,7 +199,7 @@ a0=0，a1=0x82200000
 
 ## 五、测试与验证
 
-本节采用指定QEMU4.1.1环境的实际命令日志。原6.2截图保留在附录C，指定环境正式终端截图已收到1/5张，其余待补；来源与校验值见[截图清单](evidence/qemu-4.1.1/user-terminal-screenshots.json)。
+本节采用指定QEMU4.1.1环境的实际命令日志。原6.2截图保留在附录C，指定环境正式终端截图已收到2/5张，其余待补；来源与校验值见[截图清单](evidence/qemu-4.1.1/user-terminal-screenshots.json)。
 
 ### 5.1 编译与版本
 
@@ -210,6 +210,10 @@ a0=0，a1=0x82200000
 实测 `QEMU emulator version 4.1.1`。`make -B`完成编译、链接和镜像转换，ELF为RISC-V，入口 `0x80200000`。证据：[version.log](evidence/qemu-4.1.1/version.log)、[build.log](evidence/qemu-4.1.1/build.log)、[elf-layout.log](evidence/qemu-4.1.1/elf-layout.log)。
 
 ### 5.2 原始启动方式与内核输出
+
+![QEMU4.1.1 内核启动真实终端截图](images/qemu411-qemu.png)
+
+2026-10-06组长提供的真实截图显示make qemu、OpenSBI v0.4与内核启动信息。该图尚未展示退出步骤；下面的正常退出与退出码来自独立自动运行日志，不将其写成这张截图的观测。
 
 Makefile默认恢复为原框架的 `-device loader,file=bin/ucore.img,addr=0x80200000`。实际 `make qemu`输出OpenSBI v0.4和 `(THU.CST) os is loading ...`，然后内核无限循环。通过Ctrl+A、松开、X正常退出，退出码0。证据：[make-qemu.log](evidence/qemu-4.1.1/make-qemu.log)、[original-loader.log](evidence/qemu-4.1.1/original-loader.log)、[execution.json](evidence/qemu-4.1.1/execution.json)。
 
@@ -231,7 +235,7 @@ a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
 
 镜像未因切换模拟器而改变；栈底 `0x80201000`、栈顶 `0x80203000`，大小8192字节。当前BSS的 `edata=end=0x80203008`，没有非空BSS逐字节清零的测试。
 
-版本与编译截图已收到；当前还需补充make qemu、GDB复位、固件与内核入口、GDB建栈与tail的正式截图。建议分别保存为 `images/qemu411-version-build.png`、`images/qemu411-qemu.png`、`images/qemu411-gdb-reset.png`、`images/qemu411-gdb-entry.png`、`images/qemu411-gdb-stack.png`；若保留额外检查截图，可另存 `images/qemu411-check.png`。当前不添加不存在的图片引用。
+当前已收到：版本与编译、内核启动。待补正式截图：GDB复位指令、GDB固件与内核入口、GDB建栈与tail。建议分别保存为 `images/qemu411-version-build.png`、`images/qemu411-qemu.png`、`images/qemu411-gdb-reset.png`、`images/qemu411-gdb-entry.png`、`images/qemu411-gdb-stack.png`；若保留额外检查截图，可另存 `images/qemu411-check.png`。当前不添加不存在的图片引用。
 
 ---
 
@@ -298,7 +302,7 @@ a21c11243b36836e7c42ffa13b0539a1cd2ee712386bd0b4cd60468b1c3467fd
 
 ## 附录 B：早期 Windows 验证与补齐记录
 
-以下五张JPG是此前Windows日志展示截图；旧Ubuntu6.2的六张终端截图保留在附录C。当前正文采用指定QEMU4.1.1的真实日志，指定环境正式终端截图已收到1/5张，其余待补；来源与校验值见[截图清单](evidence/qemu-4.1.1/user-terminal-screenshots.json)。
+以下五张JPG是此前Windows日志展示截图；旧Ubuntu6.2的六张终端截图保留在附录C。当前正文采用指定QEMU4.1.1的真实日志，指定环境正式终端截图已收到2/5张，其余待补；来源与校验值见[截图清单](evidence/qemu-4.1.1/user-terminal-screenshots.json)。
 
 ### B.1 编译与运行
 
