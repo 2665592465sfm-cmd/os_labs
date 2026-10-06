@@ -37,10 +37,21 @@
       ],
       "method": "Original screenshot bytes; not edited or generated",
       "observation": "PC=0x1000 and five reset instructions match; Missing register name also appears. Cause unconfirmed; image preserved unchanged."
+    },
+    {
+      "role": "gdb-entry",
+      "original_file": "codex-clipboard-a158e229-e097-44b9-810c-9201eb8e7b90.png",
+      "saved_as": "report/images/qemu411-gdb-entry.png",
+      "received_date": "2026-10-06",
+      "sha256": "df56425ff8b9be88a04b5318c59872736c97fd12fe7163c6587ac4cd6ac2c109",
+      "dimensions": [
+        1474,
+        837
+      ],
+      "method": "Original screenshot bytes; not edited or generated"
     }
   ],
   "pending_roles": [
-    "gdb-entry",
     "gdb-stack"
   ],
   "excluded_process_screenshots": [
