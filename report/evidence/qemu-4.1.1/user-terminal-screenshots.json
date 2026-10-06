@@ -1,0 +1,26 @@
+{
+  "qemu": "4.1.1",
+  "images": [
+    {
+      "role": "version-build",
+      "original_file": "codex-clipboard-9ac6ed63-e1fb-47b1-9662-30c79ee6f83f.png",
+      "saved_as": "report/images/qemu411-version-build.png",
+      "received_date": "2026-10-06",
+      "sha256": "c11cc263201e781c32435abb415f308403647312a4746da5a04e8b96a146db30",
+      "dimensions": [
+        1293,
+        435
+      ],
+      "method": "Original screenshot bytes; not edited or generated"
+    }
+  ],
+  "pending_roles": [
+    "qemu",
+    "gdb-reset",
+    "gdb-entry",
+    "gdb-stack"
+  ],
+  "excluded_process_screenshots": [
+    "codex-clipboard-eb1c3d68-1fb3-4f5a-99da-ec41623f1bed.png"
+  ]
+}
