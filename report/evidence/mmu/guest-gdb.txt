@@ -1,0 +1,38 @@
+Reading symbols from bin/kernel...
+(gdb) set pagination off
+(gdb) set confirm off
+(gdb) set architecture riscv:rv64
+The target architecture is set to "riscv:rv64".
+(gdb) target remote localhost:1235
+Remote debugging using localhost:1235
+0x0000000000001000 in ?? ()
+(gdb) p/x $pc
+$1 = 0x1000
+(gdb) thbreak *mmu_probe_load
+Hardware assisted breakpoint 1 at 0xffffffffc020106a: file kern/mm/lab2_extra_check.c, line 11.
+(gdb) thbreak *mmu_probe_after
+Hardware assisted breakpoint 2 at 0xffffffffc0201072: file kern/mm/lab2_extra_check.c, line 17.
+(gdb) continue
+Continuing.
+
+Temporary breakpoint 1, 0xffffffffc020106a in mmu_probe () at kern/mm/lab2_extra_check.c:11
+11	    asm volatile("sfence.vma\n"
+(gdb) p/x $pc
+$2 = 0xffffffffc020106a
+(gdb) x/3i $pc
+=> 0xffffffffc020106a <mmu_probe+12>:	ld	t0,0(a1)
+   0xffffffffc020106e <mmu_probe+16>:	ld	t1,0(a1)
+   0xffffffffc0201072 <mmu_probe+20>:	ld	a2,0(a1)
+(gdb) p/x &mmu_probe_word
+$3 = 0xffffffffc0208000
+(gdb) continue
+Continuing.
+
+Temporary breakpoint 2, mmu_probe () at kern/mm/lab2_extra_check.c:17
+17	    cprintf("MMU probe: two loads from VA=0x%016lx value=0x%016lx\n",
+(gdb) p/x $pc
+$4 = 0xffffffffc0201072
+(gdb) p/x $t0
+$5 = 0x241239602411688
+(gdb) p/x $t1
+$6 = 0x241239602411688

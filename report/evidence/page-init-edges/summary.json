@@ -1,0 +1,42 @@
+[
+  {
+    "case": "zero",
+    "memory_base": 2147483648,
+    "memory_size": 0,
+    "passed": true,
+    "expected_error": "invalid DTB memory range",
+    "init_memmap_calls": 0
+  },
+  {
+    "case": "overflow",
+    "memory_base": 2147483648,
+    "memory_size": 18446744073709551615,
+    "passed": true,
+    "expected_error": "invalid DTB memory range",
+    "init_memmap_calls": 0
+  },
+  {
+    "case": "wrong_base",
+    "memory_base": 2415919104,
+    "memory_size": 134217728,
+    "passed": true,
+    "expected_error": "invalid DTB memory range",
+    "init_memmap_calls": 0
+  },
+  {
+    "case": "tiny",
+    "memory_base": 2147483648,
+    "memory_size": 2101248,
+    "passed": true,
+    "expected_error": "not enough RAM for Page descriptors",
+    "init_memmap_calls": 0
+  },
+  {
+    "case": "no_free",
+    "memory_base": 2147483648,
+    "memory_size": 2158592,
+    "passed": true,
+    "expected_error": null,
+    "init_memmap_calls": 0
+  }
+]

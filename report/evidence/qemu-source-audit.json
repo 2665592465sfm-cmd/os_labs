@@ -1,0 +1,23 @@
+{
+  "version": "4.1.1",
+  "archive_sha256": "ed6fdbbdd272611446ff8036991e9b9f04a2ab2e3ffa9e79f3bab0eb9a95a1d2",
+  "files": {
+    "target/riscv/cpu_helper.c": {
+      "sha256": "ec1d32c8d143b4520d712cfdc9c4c07e97f67be0f59397dc1fb2da8b79cb15be",
+      "matches_source_archive": true
+    },
+    "accel/tcg/cputlb.c": {
+      "sha256": "09b6e4d97009e1530ff0ad931304731781a7e4b3430e9250a5a7a6eeb0fef754",
+      "matches_source_archive": true
+    },
+    "tcg/i386/tcg-target.inc.c": {
+      "sha256": "27156ef874280d786fa029bdb02aa4d85b37e42d7ba8cfabdc2896bcb8680956",
+      "matches_source_archive": true
+    },
+    "include/exec/cpu-defs.h": {
+      "sha256": "91dedf4803be9426512c76b0c9bd584579ed55283d269747da6608d791248a26",
+      "matches_source_archive": true
+    }
+  },
+  "debug_config": "/home/sfm/os-course/toolchains/qemu-4.1.1-debug/config-host.mak"
+}

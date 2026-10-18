@@ -29,3 +29,10 @@ out/
 __pycache__/
 *.py[cod]
 
+# Lab2 generated outputs
+code/bin/
+code/obj/
+code/evidence/
+code/.qemu.out
+code/.gdb.in
+code/test-output/

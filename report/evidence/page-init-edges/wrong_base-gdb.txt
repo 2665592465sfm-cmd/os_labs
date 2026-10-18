@@ -1,0 +1,40 @@
+Reading symbols from bin/kernel...
+(gdb) set pagination off
+(gdb) set confirm off
+(gdb) set architecture riscv:rv64
+The target architecture is set to "riscv:rv64".
+(gdb) target remote localhost:1236
+Remote debugging using localhost:1236
+0x0000000000001000 in ?? ()
+(gdb) thbreak *pmm_init
+Hardware assisted breakpoint 1 at 0xffffffffc02014a8: file kern/mm/pmm.c, line 45.
+(gdb) continue
+Continuing.
+
+Temporary breakpoint 1, init_pmm_manager () at kern/mm/pmm.c:45
+45	    pmm_manager = &best_fit_pmm_manager;
+(gdb) set variable memory_base = 0x90000000
+(gdb) set variable memory_size = 0x8000000
+(gdb) p sizeof(struct Page)
+$1 = 40
+(gdb) set $registrations = 0
+(gdb) break best_fit_init_memmap
+Breakpoint 2 at 0xffffffffc0200fce: best_fit_init_memmap. (2 locations)
+(gdb) commands 2
+silent
+set $registrations = $registrations + 1
+continue
+end
+>>>>(gdb) thbreak *__panic
+Hardware assisted breakpoint 3 at 0xffffffffc02001c2: file kern/debug/panic.c, line 12.
+(gdb) continue
+Continuing.
+
+Temporary breakpoint 3, __panic (file=file@entry=0xffffffffc0202bd8 "kern/mm/pmm.c", line=line@entry=79, fmt=fmt@entry=0xffffffffc0202bb8 "invalid DTB memory range") at kern/debug/panic.c:12
+12	    if (is_panic) {
+(gdb) x/s $a2
+0xffffffffc0202bb8:	"invalid DTB memory range"
+(gdb) p $registrations
+$2 = 0
+(gdb) printf "PASS: rejected invalid layout or skipped empty free range, registrations=0\n"
+PASS: rejected invalid layout or skipped empty free range, registrations=0
