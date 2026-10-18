@@ -1,0 +1,5 @@
+# Keep shell scripts and Makefiles runnable when checked out on Windows/WSL.
+* text=auto eol=lf
+*.jpg binary
+*.png binary
+*.zip binary
