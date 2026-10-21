@@ -83,8 +83,13 @@ def main():
     def lineno(fragment):
         return next(i+1 for i,s in enumerate(cpu_lines) if fragment in s)
     read_pte = lineno('target_ulong ppn = pte >> PTE_PPN_SHIFT;') + 2
+    pte_address_line = lineno('target_ulong pte_addr = base + idx * ptesize;')
     calc_pa = lineno('*physical = (ppn | (vpn &') + 2
     fill_done = lineno('prot, mmu_idx, TARGET_PAGE_SIZE);') + 1
+    tlb_lines = (opt.source / 'accel/tcg/cputlb.c').read_text().splitlines()
+    load_start = next(i for i,s in enumerate(tlb_lines) if s.startswith('load_helper(CPUArchState'))
+    tlb_miss_line = next(i+1 for i,s in enumerate(tlb_lines)
+                         if i > load_start and 'if (!tlb_hit(tlb_addr, addr))' in s)
     host = guest = None
     qargs = [str(opt.qemu), '-machine','virt','-nographic','-bios','default',
              '-device','loader,file=bin/ucore.img,addr=0x80200000',
@@ -118,6 +123,7 @@ def main():
         answer = host.cmd(f'break riscv_cpu_tlb_fill if address == {addr:#x} && access_type == 0')
         number = int(re.search(r'Breakpoint (\d+)',answer).group(1))
         host.cmd('set $fills = 0')
+        host.cmd(f'tbreak accel/tcg/cputlb.c:{tlb_miss_line} if addr == {addr:#x} && code_read == 0')
         host.send('continue')
         guest.wait()
         guest.cmd('p/x $pc')
@@ -125,6 +131,17 @@ def main():
         guest.cmd('p/x &mmu_probe_word')
         guest.send('continue')
         host.wait()
+        host.cmd('printf "SINGLE-STEP: C software TLB miss path\\n"')
+        for command in ('p/x addr','p/x tlb_addr','p mmu_idx','p size','bt 4'):
+            host.cmd(command)
+        # Step the actual C miss and victim-cache branches. The permanent
+        # architecture fill breakpoint then stops inside the call made here.
+        host.cmd('next')
+        host.cmd('next')
+        host.cmd('next')
+        frame = host.cmd('frame')
+        if 'riscv_cpu_tlb_fill' not in frame:
+            raise AssertionError('Expected architecture fill after TLB miss: ' + frame)
         host.cmd('set $fills = $fills + 1')
         host.cmd('bt 7')
         host.cmd('set $cpu = (RISCVCPU *)cs')
@@ -136,12 +153,26 @@ def main():
         host.cmd('tbreak get_physical_address')
         host.cmd('continue')
         host.cmd('set $physical_out = physical')
-        host.cmd(f'tbreak target/riscv/cpu_helper.c:{read_pte}')
+        host.cmd(f'tbreak target/riscv/cpu_helper.c:{pte_address_line}')
         host.cmd('continue')
+
+        def next_to_line(line):
+            for _ in range(60):
+                frame = host.cmd('frame')
+                if 'get_physical_address' not in frame:
+                    raise AssertionError('Unexpected frame while single-stepping: ' + frame)
+                current = re.search(r'cpu_helper\.c:(\d+)', frame)
+                if current and int(current.group(1)) >= line:
+                    return
+                host.cmd('next')
+            raise AssertionError('Single-step bound exceeded')
+
+        host.cmd('printf "SINGLE-STEP: PTE address, PMP check and physical PTE read\\n"')
+        next_to_line(read_pte)
         for cmd in ('p i','p levels','p ptshift','p/x base','p/x idx','p/x pte_addr','p/x pte','p/x ppn'):
             host.cmd(cmd)
-        host.cmd(f'tbreak target/riscv/cpu_helper.c:{calc_pa}')
-        host.cmd('continue')
+        host.cmd('printf "SINGLE-STEP: leaf, access permissions, superpage alignment, A/D and PA\\n"')
+        next_to_line(calc_pa)
         translated = host.cmd('p/x *physical')
         expected_pa = addr - 0xffffffff40000000
         if not re.search(r'= ' + hex(expected_pa) + r'\b', translated):
@@ -175,6 +206,7 @@ def main():
             'probe_va':addr,'expected_pa':addr-0xffffffff40000000,
             'guest_load':symbols['mmu_probe_load'],'guest_after':symbols['mmu_probe_after'],
             'data_fills_for_two_loads':1,'root_leaf_index':511,'leaf_level':2,'page_size':1<<30,
+            'page_walk_single_step':True,'tlb_c_miss_single_step':True,
             'qemu_version':'4.1.1','source':str(opt.source)}, indent=2))
         print('PASS dual GDB: Bare/Sv39, real load, root leaf, PA, cached second load')
     finally:

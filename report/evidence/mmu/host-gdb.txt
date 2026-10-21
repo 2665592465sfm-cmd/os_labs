@@ -11,8 +11,8 @@ Breakpoint 1 at 0x3ca38a: file /home/sfm/os-course/toolchains/qemu-4.1.1-source/
 Starting program: /home/sfm/os-course/toolchains/qemu-4.1.1-debug/riscv64-softmmu/qemu-system-riscv64 -machine virt -nographic -bios default -device loader,file=bin/ucore.img,addr=0x80200000 -S -gdb tcp:127.0.0.1:1235
 [Thread debugging using libthread_db enabled]
 Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
-[New Thread 0x7ffff79ff640 (LWP 574)]
-[New Thread 0x7ffff4fff640 (LWP 575)]
+[New Thread 0x7ffff79ff640 (LWP 444)]
+[New Thread 0x7ffff4fff640 (LWP 445)]
 
 OpenSBI v0.4 (Jul  2 2019 11:53:53)
    ____                    _____ ____ _____
@@ -34,7 +34,7 @@ Runtime SBI Version    : 0.1
 
 PMP0: 0x0000000080000000-0x000000008001ffff (A)
 PMP1: 0x0000000000000000-0xffffffffffffffff (A,R,W,X)
-[Switching to Thread 0x7ffff4fff640 (LWP 575)]
+[Switching to Thread 0x7ffff4fff640 (LWP 445)]
 
 Thread 3 "qemu-system-ris" hit Breakpoint 1, riscv_cpu_tlb_fill (cs=0x55555651c850, address=2149580800, size=0, access_type=MMU_INST_FETCH, mmu_idx=1, probe=false, retaddr=0) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:438
 438	{
@@ -62,6 +62,8 @@ $3 = 0x80200000
 Note: breakpoint 1 (disabled) also set at pc 0x55555591e38a.
 Breakpoint 3 at 0x55555591e38a: file /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c, line 438.
 (gdb) set $fills = 0
+(gdb) tbreak accel/tcg/cputlb.c:1271 if addr == 0xffffffffc0208000 && code_read == 0
+Temporary breakpoint 4 at 0x5555558656b0: accel/tcg/cputlb.c:1271. (14 locations)
 (gdb) continue
 Continuing.
 DTB Init
@@ -89,7 +91,34 @@ Best-Fit extra: 800 mixed operations, isolation, exhaustion and recovery PASS
 SLUB: 27 size boundaries, 16-byte alignment, data isolation, large objects PASS
 SLUB: multi-slab, slot reuse, NULL/OOM, full page recovery PASS
 
+Thread 3 "qemu-system-ris" hit Temporary breakpoint 4, load_helper (full_load=0x5555558677b2 <helper_le_ldq_mmu>, code_read=false, big_endian=false, size=8, retaddr=140737303806268, oi=49, addr=18446744072637939712, env=0x555556525260) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/accel/tcg/cputlb.c:1271
+1271	    if (!tlb_hit(tlb_addr, addr)) {
+(gdb) printf "SINGLE-STEP: C software TLB miss path\n"
+SINGLE-STEP: C software TLB miss path
+(gdb) p/x addr
+$4 = 0xffffffffc0208000
+(gdb) p/x tlb_addr
+$5 = 0xffffffffffffffff
+(gdb) p mmu_idx
+$6 = 1
+(gdb) p size
+$7 = 8
+(gdb) bt 4
+#0  load_helper (full_load=0x5555558677b2 <helper_le_ldq_mmu>, code_read=false, big_endian=false, size=8, retaddr=140737303806268, oi=49, addr=18446744072637939712, env=0x555556525260) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/accel/tcg/cputlb.c:1271
+#1  helper_le_ldq_mmu (env=0x555556525260, addr=18446744072637939712, oi=49, retaddr=140737303806268) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/accel/tcg/cputlb.c:1449
+#2  0x00007ffff50001ab in code_gen_buffer ()
+#3  0x00005555558892fb in cpu_tb_exec (cpu=0x55555651c850, itb=0x7ffff5000040 <code_gen_buffer+19>) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/accel/tcg/cpu-exec.c:173
+(More stack frames follow...)
+(gdb) next
+1272	        if (!victim_tlb_hit(env, mmu_idx, index, tlb_off,
+(gdb) next
+1274	            tlb_fill(env_cpu(env), addr, size,
+(gdb) next
+
 Thread 3 "qemu-system-ris" hit Breakpoint 3, riscv_cpu_tlb_fill (cs=0x55555651c850, address=18446744072637939712, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, probe=false, retaddr=140737303806268) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:438
+438	{
+(gdb) frame
+#0  riscv_cpu_tlb_fill (cs=0x55555651c850, address=18446744072637939712, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, probe=false, retaddr=140737303806268) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:438
 438	{
 (gdb) set $fills = $fills + 1
 (gdb) bt 7
@@ -104,12 +133,12 @@ Thread 3 "qemu-system-ris" hit Breakpoint 3, riscv_cpu_tlb_fill (cs=0x55555651c8
 (gdb) set $cpu = (RISCVCPU *)cs
 (gdb) set $va = 0xffffffffc0208000
 (gdb) p/x $cpu->env.satp
-$4 = 0x8000000000080206
+$8 = 0x8000000000080206
 (gdb) p sizeof(CPUTLBEntry)
-$5 = 32
+$9 = 32
 (gdb) set $entry = (CPUTLBEntry *)((char *)$cpu->neg.tlb.f[1].table + (($va >> 7) & $cpu->neg.tlb.f[1].mask))
 (gdb) p/x *$entry
-$6 = {
+$10 = {
   {
     {
       addr_read = 0xffffffffffffffff,
@@ -121,47 +150,155 @@ $6 = {
   }
 }
 (gdb) tbreak get_physical_address
-Temporary breakpoint 4 at 0x55555591d775: file /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c, line 158.
+Temporary breakpoint 5 at 0x55555591d775: file /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c, line 158.
 (gdb) continue
 Continuing.
 
-Thread 3 "qemu-system-ris" hit Temporary breakpoint 4, get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:158
+Thread 3 "qemu-system-ris" hit Temporary breakpoint 5, get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:158
 158	{
 (gdb) set $physical_out = physical
-(gdb) tbreak target/riscv/cpu_helper.c:256
-Temporary breakpoint 5 at 0x55555591dc92: file /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c, line 256.
+(gdb) tbreak target/riscv/cpu_helper.c:242
+Temporary breakpoint 6 at 0x55555591dc01: file /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c, line 242.
 (gdb) continue
 Continuing.
 
-Thread 3 "qemu-system-ris" hit Temporary breakpoint 5, get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:256
+Thread 3 "qemu-system-ris" hit Temporary breakpoint 6, get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:242
+242	        target_ulong pte_addr = base + idx * ptesize;
+(gdb) printf "SINGLE-STEP: PTE address, PMP check and physical PTE read\n"
+SINGLE-STEP: PTE address, PMP check and physical PTE read
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:242
+242	        target_ulong pte_addr = base + idx * ptesize;
+(gdb) next
+244	        if (riscv_feature(env, RISCV_FEATURE_PMP) &&
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:244
+244	        if (riscv_feature(env, RISCV_FEATURE_PMP) &&
+(gdb) next
+245	            !pmp_hart_has_privs(env, pte_addr, sizeof(target_ulong),
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:245
+245	            !pmp_hart_has_privs(env, pte_addr, sizeof(target_ulong),
+(gdb) next
+244	        if (riscv_feature(env, RISCV_FEATURE_PMP) &&
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:244
+244	        if (riscv_feature(env, RISCV_FEATURE_PMP) &&
+(gdb) next
+252	        target_ulong pte = ldq_phys(cs->as, pte_addr);
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:252
+252	        target_ulong pte = ldq_phys(cs->as, pte_addr);
+(gdb) next
+254	        target_ulong ppn = pte >> PTE_PPN_SHIFT;
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:254
+254	        target_ulong ppn = pte >> PTE_PPN_SHIFT;
+(gdb) next
+256	        if (!(pte & PTE_V)) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:256
 256	        if (!(pte & PTE_V)) {
 (gdb) p i
-$7 = 0
+$11 = 0
 (gdb) p levels
-$8 = 3
+$12 = 3
 (gdb) p ptshift
-$9 = 18
+$13 = 18
 (gdb) p/x base
-$10 = 0x80206000
+$14 = 0x80206000
 (gdb) p/x idx
-$11 = 0x1ff
+$15 = 0x1ff
 (gdb) p/x pte_addr
-$12 = 0x80206ff8
+$16 = 0x80206ff8
 (gdb) p/x pte
-$13 = 0x200000cf
+$17 = 0x200000cf
 (gdb) p/x ppn
-$14 = 0x80000
-(gdb) tbreak target/riscv/cpu_helper.c:336
-Temporary breakpoint 6 at 0x55555591df09: file /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c, line 337.
-(gdb) continue
-Continuing.
-
-Thread 3 "qemu-system-ris" hit Temporary breakpoint 6, get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:337
+$18 = 0x80000
+(gdb) printf "SINGLE-STEP: leaf, access permissions, superpage alignment, A/D and PA\n"
+SINGLE-STEP: leaf, access permissions, superpage alignment, A/D and PA
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:256
+256	        if (!(pte & PTE_V)) {
+(gdb) next
+259	        } else if (!(pte & (PTE_R | PTE_W | PTE_X))) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:259
+259	        } else if (!(pte & (PTE_R | PTE_W | PTE_X))) {
+(gdb) next
+262	        } else if ((pte & (PTE_R | PTE_W | PTE_X)) == PTE_W) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:262
+262	        } else if ((pte & (PTE_R | PTE_W | PTE_X)) == PTE_W) {
+(gdb) next
+265	        } else if ((pte & (PTE_R | PTE_W | PTE_X)) == (PTE_W | PTE_X)) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:265
+265	        } else if ((pte & (PTE_R | PTE_W | PTE_X)) == (PTE_W | PTE_X)) {
+(gdb) next
+268	        } else if ((pte & PTE_U) && ((mode != PRV_U) &&
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:268
+268	        } else if ((pte & PTE_U) && ((mode != PRV_U) &&
+(gdb) next
+273	        } else if (!(pte & PTE_U) && (mode != PRV_S)) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:273
+273	        } else if (!(pte & PTE_U) && (mode != PRV_S)) {
+(gdb) next
+276	        } else if (ppn & ((1ULL << ptshift) - 1)) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:276
+276	        } else if (ppn & ((1ULL << ptshift) - 1)) {
+(gdb) next
+279	        } else if (access_type == MMU_DATA_LOAD && !((pte & PTE_R) ||
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:279
+279	        } else if (access_type == MMU_DATA_LOAD && !((pte & PTE_R) ||
+(gdb) next
+283	        } else if (access_type == MMU_DATA_STORE && !(pte & PTE_W)) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:283
+283	        } else if (access_type == MMU_DATA_STORE && !(pte & PTE_W)) {
+(gdb) next
+286	        } else if (access_type == MMU_INST_FETCH && !(pte & PTE_X)) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:286
+286	        } else if (access_type == MMU_INST_FETCH && !(pte & PTE_X)) {
+(gdb) next
+292	                (access_type == MMU_DATA_STORE ? PTE_D : 0);
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:292
+292	                (access_type == MMU_DATA_STORE ? PTE_D : 0);
+(gdb) next
+291	            target_ulong updated_pte = pte | PTE_A |
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:291
+291	            target_ulong updated_pte = pte | PTE_A |
+(gdb) next
+295	            if (updated_pte != pte) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:295
+295	            if (updated_pte != pte) {
+(gdb) next
+333	            target_ulong vpn = addr >> PGSHIFT;
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:333
+333	            target_ulong vpn = addr >> PGSHIFT;
+(gdb) next
+334	            *physical = (ppn | (vpn & ((1L << ptshift) - 1))) << PGSHIFT;
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:334
+334	            *physical = (ppn | (vpn & ((1L << ptshift) - 1))) << PGSHIFT;
+(gdb) next
+337	            if ((pte & PTE_R) || ((pte & PTE_X) && mxr)) {
+(gdb) frame
+#0  get_physical_address (env=0x555556525260, physical=0x7ffff4ffe230, prot=0x7ffff4ffe224, addr=18446744072637939712, access_type=0, mmu_idx=1) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:337
 337	            if ((pte & PTE_R) || ((pte & PTE_X) && mxr)) {
 (gdb) p/x *physical
-$15 = 0x80208000
+$19 = 0x80208000
 (gdb) p/x addr
-$16 = 0xffffffffc0208000
+$20 = 0xffffffffc0208000
 (gdb) tbreak target/riscv/cpu_helper.c:474
 Temporary breakpoint 7 at 0x55555591e57a: file /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c, line 474.
 (gdb) continue
@@ -170,12 +307,12 @@ Continuing.
 Thread 3 "qemu-system-ris" hit Temporary breakpoint 7, riscv_cpu_tlb_fill (cs=0x55555651c850, address=18446744072637939712, size=8, access_type=MMU_DATA_LOAD, mmu_idx=1, probe=false, retaddr=140737303806268) at /home/sfm/os-course/toolchains/qemu-4.1.1-source/target/riscv/cpu_helper.c:474
 474	        return true;
 (gdb) p/x pa
-$17 = 0x80208000
+$21 = 0x80208000
 (gdb) p prot
-$18 = 7
+$22 = 7
 (gdb) set $entry = (CPUTLBEntry *)((char *)$cpu->neg.tlb.f[1].table + (($va >> 7) & $cpu->neg.tlb.f[1].mask))
 (gdb) p/x *$entry
-$19 = {
+$23 = {
   {
     {
       addr_read = 0xffffffffc0208000,
@@ -197,12 +334,12 @@ end
 Continuing.
 
 Thread 1 "qemu-system-ris" received signal SIGINT, Interrupt.
-[Switching to Thread 0x7ffff7c2ff40 (LWP 571)]
+[Switching to Thread 0x7ffff7c2ff40 (LWP 441)]
 0x00007ffff7b18e1e in ppoll () from /lib/x86_64-linux-gnu/libc.so.6
 (gdb) p $fills
-$20 = 1
+$24 = 1
 (gdb) p/x *$entry
-$21 = {
+$25 = {
   {
     {
       addr_read = 0xffffffffc0208000,
@@ -216,4 +353,4 @@ $21 = {
 (gdb) printf "PASS: two guest loads, one data TLB fill; second load used cached mapping\n"
 PASS: two guest loads, one data TLB fill; second load used cached mapping
 (gdb) kill
-[Inferior 1 (process 571) killed]
+[Inferior 1 (process 441) killed]

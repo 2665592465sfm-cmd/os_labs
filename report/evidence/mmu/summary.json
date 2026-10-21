@@ -10,6 +10,8 @@
   "root_leaf_index": 511,
   "leaf_level": 2,
   "page_size": 1073741824,
+  "page_walk_single_step": true,
+  "tlb_c_miss_single_step": true,
   "qemu_version": "4.1.1",
   "source": "/home/sfm/os-course/toolchains/qemu-4.1.1-source"
 }
