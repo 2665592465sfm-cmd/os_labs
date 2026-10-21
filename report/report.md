@@ -500,7 +500,7 @@ Requirements：说明代码生成快路径和 C 慢路径的区别；区分客�
 
 ### 5.2 测试截图
 
-以下为真实运行日志在浏览器日志查看页中的截图，保留来源文件名和节选标识；不是手工重绘的终端。完整输出见对应原始文本。
+编译、运行及调试结果如下。
 
 ![环境、编译和默认启动](images/build-run.jpg)
 
@@ -513,6 +513,8 @@ Requirements：说明代码生成快路径和 C 慢路径的区别；区分客�
 ![QEMU 页表遍历](images/mmu-walk.jpg)
 
 ![客体两条指令与软件 TLB](images/mmu-tlb.jpg)
+
+说明：以上图片为真实运行日志的展示页面截图，不是终端窗口截图。完整构建、运行和评分记录保存在 [report/evidence/](evidence/)；QEMU 双 GDB 调试的完整记录保存在 [report/evidence/mmu/](evidence/mmu/)。
 
 ### 5.3 复现步骤
 
