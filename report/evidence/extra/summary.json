@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "integer_register_slots_checked": 32,
+  "instruction_lengths": [
+    2,
+    4
+  ],
+  "probes": {
+    "lab3_context_break16": {
+      "epc": "0xffffffffc0201b00",
+      "length": 2
+    },
+    "lab3_break32": {
+      "epc": "0xffffffffc0201e2a",
+      "length": 4
+    },
+    "lab3_illegal16": {
+      "epc": "0xffffffffc0201e3a",
+      "length": 2
+    },
+    "lab3_illegal32": {
+      "epc": "0xffffffffc0201e48",
+      "length": 4
+    }
+  },
+  "synthetic_irq_cases": 14,
+  "unknown_exception_preserves_frame": true,
+  "long_encoding_diagnosed_without_epc_change": true,
+  "nested_interrupt_guards": true,
+  "periodic_reports": 10,
+  "qemu_exit": 0,
+  "scope": "RV64GC, one hart, readable kernel exception instructions; no user-stack or FP/vector context claim"
+}

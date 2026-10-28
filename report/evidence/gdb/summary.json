@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "port": 1237,
+  "trapframe_bytes": 288,
+  "writable_integer_registers_checked": 31,
+  "actual_timer": true,
+  "ticks_at_first_return": 1,
+  "timer_epc_unchanged": true,
+  "sret_address": "0xffffffffc0200cda",
+  "sret_single_step": true,
+  "stack_restored": true,
+  "sie_restored": true,
+  "spp_cleared_by_sret": true
+}

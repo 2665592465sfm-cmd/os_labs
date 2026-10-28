@@ -29,3 +29,10 @@ out/
 __pycache__/
 *.py[cod]
 
+
+# Generated kernel and validation outputs
+code/bin/
+code/obj/
+code/test-output/
+code/.qemu*.out
+code/.gdb.in

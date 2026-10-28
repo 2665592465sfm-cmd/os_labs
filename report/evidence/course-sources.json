@@ -1,0 +1,82 @@
+{
+  "fetched_date": "2026-10-28",
+  "pages": [
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3.html",
+      "path": "lab3_lab3",
+      "sha256": "2c6e77f3c46698444e5360568120edec3136e6bcf5ae1ed235cde2bdc2658ce6",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_1_goals.html",
+      "path": "lab3_lab3_1_goals",
+      "sha256": "3198690a4069d6c08eb41d5ef6794eb3be82d24a407810484dba50a82d20b124",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_2_1_exercise.html",
+      "path": "lab3_lab3_2_1_exercise",
+      "sha256": "738ed4d4616179274c54d3fb1c6c6673ded68d3195146c9439a685742880f204",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_2_2_files.html",
+      "path": "lab3_lab3_2_2_files",
+      "sha256": "67070e17b9177b5fb0b8848603574bdba1d885037e30f1f32516f8efe9917256",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_2_labs.html",
+      "path": "lab3_lab3_2_labs",
+      "sha256": "fcdea78f7d0fff62e44835f24aadc1b4acf94f359340d3a3c0fd67a092d374bf",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_3_1_introduce.html",
+      "path": "lab3_lab3_3_1_introduce",
+      "sha256": "bfe74df7ee1dee94f4a8a34f35bc76a8088e0332f0650639599720bb4c68c614",
+      "links": [
+        {
+          "text": "历史版本的ISA手册",
+          "url": "https://github.com/riscv/riscv-isa-manual/releases/tag/archive"
+        }
+      ]
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_3_2_trapentry.html",
+      "path": "lab3_lab3_3_2_trapentry",
+      "sha256": "2e6d0332993cc63b5117434dce04e98bde030e0cddd98668d29b721f9c4d1326",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_3_3_trap.html",
+      "path": "lab3_lab3_3_3_trap",
+      "sha256": "17f6f59122fa212074c8333b82a936b3831effbec0f1f0017155039fce495762",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_3_4_clock.html",
+      "path": "lab3_lab3_3_4_clock",
+      "sha256": "8174da4cfd772b7730aa8be3ae893b3decc85e1b173ada38a83c5f560603626d",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_3_5_atomic.html",
+      "path": "lab3_lab3_3_5_atomic",
+      "sha256": "2119fb1b762acb1cfb3cbfeabebf1e503199355e63eda9f54a419aeb35b6dd93",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_3_interrupt.html",
+      "path": "lab3_lab3_3_interrupt",
+      "sha256": "d481f83a27851d976262dce89cf28210a913e4791b5fab5e1e7a1fb0ddc8535a",
+      "links": []
+    },
+    {
+      "url": "http://oslab.mobisys.top/lab2026/_book/lab3/lab3_4_lab_requirement.html",
+      "path": "lab3_lab3_4_lab_requirement",
+      "sha256": "74b0f807f524862361e33f3553e25d1483a0198358d059658b4afbb3fe13086c",
+      "links": []
+    }
+  ]
+}

@@ -1,0 +1,194 @@
++set architecture riscv:rv64
+The target architecture is set to "riscv:rv64".
++target remote localhost:1237
+0x0000000000001000 in ?? ()
++thbreak *__alltraps
+Hardware assisted breakpoint 1 at 0xffffffffc0200c28: file kern/trap/trapentry.S, line 102.
++continue
+
+Temporary breakpoint 1, __alltraps () at kern/trap/trapentry.S:102
+102	    SAVE_ALL
++set $before_ra = $ra
++set $before_sp = $sp
++set $before_gp = $gp
++set $before_tp = $tp
++set $before_t0 = $t0
++set $before_t1 = $t1
++set $before_t2 = $t2
++set $before_s0 = $s0
++set $before_s1 = $s1
++set $before_a0 = $a0
++set $before_a1 = $a1
++set $before_a2 = $a2
++set $before_a3 = $a3
++set $before_a4 = $a4
++set $before_a5 = $a5
++set $before_a6 = $a6
++set $before_a7 = $a7
++set $before_s2 = $s2
++set $before_s3 = $s3
++set $before_s4 = $s4
++set $before_s5 = $s5
++set $before_s6 = $s6
++set $before_s7 = $s7
++set $before_s8 = $s8
++set $before_s9 = $s9
++set $before_s10 = $s10
++set $before_s11 = $s11
++set $before_t3 = $t3
++set $before_t4 = $t4
++set $before_t5 = $t5
++set $before_t6 = $t6
++set $old_epc = $sepc
++set $old_status = $sstatus
++printf "TRAP ENTRY\n"
+TRAP ENTRY
++p/x $pc
+$1 = 0xffffffffc0200c28
++p/x $sp
+$2 = 0xffffffffc0205ff0
++p/x $sepc
+$3 = 0xffffffffc0200832
++p/x $sstatus
+$4 = 0x8000000000006120
++p/x $scause
+$5 = 0x8000000000000005
++thbreak *trap
+Hardware assisted breakpoint 2 at 0xffffffffc0200c1a: file kern/trap/trap.c, line 179.
++continue
+
+Temporary breakpoint 2, trap_dispatch (tf=0xffffffffc0205ed0) at kern/trap/trap.c:179
+179	    if ((intptr_t)tf->cause < 0) {
++set $tf = (struct trapframe *)$a0
++printf "C ENTRY AND FRAME\n"
+C ENTRY AND FRAME
++p sizeof(struct trapframe)
+$6 = 288
++p/x $a0
+$7 = 0xffffffffc0205ed0
++p/x $sp
+$8 = 0xffffffffc0205ed0
++p/x *$tf
+$9 = {
+  gpr = {
+    zero = 0x0,
+    ra = 0xffffffffc020009c,
+    sp = 0xffffffffc0205ff0,
+    gp = 0x0,
+    tp = 0x8001be00,
+    t0 = 0x0,
+    t1 = 0xffffffffc0205fb8,
+    t2 = 0x1,
+    s0 = 0x8001bd90,
+    s1 = 0x8001be00,
+    a0 = 0x1a,
+    a1 = 0x0,
+    a2 = 0x0,
+    a3 = 0xffffffffc0205fb8,
+    a4 = 0x1,
+    a5 = 0x8000000000006000,
+    a6 = 0x10,
+    a7 = 0x1,
+    s2 = 0x800095c0,
+    s3 = 0x0,
+    s4 = 0x0,
+    s5 = 0x0,
+    s6 = 0x0,
+    s7 = 0x8,
+    s8 = 0x2000,
+    s9 = 0x0,
+    s10 = 0x0,
+    s11 = 0x0,
+    t3 = 0xffffffffc02022c8,
+    t4 = 0x1,
+    t5 = 0xffffffff80000000,
+    t6 = 0x0
+  },
+  status = 0x8000000000006120,
+  epc = 0xffffffffc0200832,
+  badvaddr = 0x0,
+  cause = 0x8000000000000005
+}
++if !(sizeof(struct trapframe) == 288 && $a0 == $sp && $sp == $before_sp - 288)
++if !($tf->gpr.sp == $before_sp && $tf->epc == $old_epc)
++if !($tf->cause == 0x8000000000000005 && ($tf->status & 0x100) != 0)
++thbreak *__trapret
+Hardware assisted breakpoint 3 at 0xffffffffc0200c90: file kern/trap/trapentry.S, line 111.
++continue
+
+Temporary breakpoint 3, __trapret () at kern/trap/trapentry.S:111
+111	    RESTORE_ALL
++printf "C RETURN\n"
+C RETURN
++p ticks
+$10 = 1
++p/x $tf->epc
+$11 = 0xffffffffc0200832
++if !(ticks == 1 && $tf->epc == $old_epc)
++thbreak *0xffffffffc0200cda
+Hardware assisted breakpoint 4 at 0xffffffffc0200cda: file kern/trap/trapentry.S, line 113.
++continue
+
+Temporary breakpoint 4, __trapret () at kern/trap/trapentry.S:113
+113	    sret
++printf "BEFORE SRET\n"
+BEFORE SRET
++p/x $sp
+$12 = 0xffffffffc0205ff0
++p/x $sepc
+$13 = 0xffffffffc0200832
++p/x $sstatus
+$14 = 0x8000000000006120
++if !($ra == $before_ra)
++if !($sp == $before_sp)
++if !($gp == $before_gp)
++if !($tp == $before_tp)
++if !($t0 == $before_t0)
++if !($t1 == $before_t1)
++if !($t2 == $before_t2)
++if !($s0 == $before_s0)
++if !($s1 == $before_s1)
++if !($a0 == $before_a0)
++if !($a1 == $before_a1)
++if !($a2 == $before_a2)
++if !($a3 == $before_a3)
++if !($a4 == $before_a4)
++if !($a5 == $before_a5)
++if !($a6 == $before_a6)
++if !($a7 == $before_a7)
++if !($s2 == $before_s2)
++if !($s3 == $before_s3)
++if !($s4 == $before_s4)
++if !($s5 == $before_s5)
++if !($s6 == $before_s6)
++if !($s7 == $before_s7)
++if !($s8 == $before_s8)
++if !($s9 == $before_s9)
++if !($s10 == $before_s10)
++if !($s11 == $before_s11)
++if !($t3 == $before_t3)
++if !($t4 == $before_t4)
++if !($t5 == $before_t5)
++if !($t6 == $before_t6)
++if !($sepc == $old_epc && ($sstatus & 0x100) != 0 && ($sstatus & 2) == 0)
++thbreak *$old_epc
+Hardware assisted breakpoint 5 at 0xffffffffc0200832: file kern/driver/intr.c, line 5.
++si
+
+Temporary breakpoint 5, intr_enable () at kern/driver/intr.c:5
+5	void intr_enable(void) { set_csr(sstatus, SSTATUS_SIE); }
++printf "AFTER SRET\n"
+AFTER SRET
++p/x $pc
+$15 = 0xffffffffc0200832
++p/x $sp
+$16 = 0xffffffffc0205ff0
++p/x $sstatus
+$17 = 0x8000000000006002
++if !($pc == $old_epc && $sp == $before_sp)
++if !(($sstatus & 2) != 0 && ($sstatus & 0x100) == 0)
++printf "PASS: real timer frame, 31 writable GPRs, unchanged EPC and sret return\n"
+PASS: real timer frame, 31 writable GPRs, unchanged EPC and sret return
++detach
+[Inferior 1 (process 1) detached]
++quit
